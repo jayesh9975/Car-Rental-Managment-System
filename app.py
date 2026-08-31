@@ -85,7 +85,7 @@ LANDING_TEMPLATE = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Rental Management System - Premium Ride Experience</title>
+    <title>JAY'S CARS - Car Rental Management System</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -97,9 +97,15 @@ LANDING_TEMPLATE = """
         .bg-slide.active { opacity: 1; }
         .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(11, 15, 25, 0.94) 0%, rgba(15, 23, 42, 0.88) 100%); z-index: -1; }
 
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 6%; background: rgba(11, 15, 25, 0.85); backdrop-filter: blur(12px); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); }
-        .logo { display: flex; align-items: center; gap: 12px; font-size: 1.25rem; font-weight: 800; color: #ffffff; text-decoration: none; }
-        .logo i { color: #2563eb; font-size: 1.6rem; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 6%; background: rgba(11, 15, 25, 0.85); backdrop-filter: blur(12px); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        
+        /* Logo Styling with JAY'S CARS Badge */
+        .logo-box { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+        .logo-icon-wrap { width: 45px; height: 45px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
+        .logo-icon-wrap i { color: #ffffff; font-size: 1.3rem; }
+        .logo-text h2 { font-size: 1.25rem; font-weight: 800; color: #ffffff; letter-spacing: 0.5px; }
+        .logo-text span { font-size: 0.72rem; color: #94a3b8; display: block; font-weight: 500; }
+
         .nav-links { display: flex; gap: 25px; align-items: center; }
         .nav-links a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: color 0.3s; }
         .nav-links a:hover { color: #ffffff; }
@@ -138,7 +144,6 @@ LANDING_TEMPLATE = """
         .feature-card-land h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
         .feature-card-land p { font-size: 0.9rem; color: #94a3b8; line-height: 1.6; }
 
-        /* Privacy Policy Section Styles */
         .policy-section { padding: 80px 6%; background: rgba(11, 15, 25, 0.95); border-top: 1px solid rgba(255,255,255,0.08); }
         .policy-container { max-width: 900px; margin: 0 auto; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.1); padding: 50px; border-radius: 20px; backdrop-filter: blur(10px); }
         .policy-container h2 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; color: #ffffff; }
@@ -166,9 +171,14 @@ LANDING_TEMPLATE = """
     <div class="bg-overlay"></div>
 
     <nav>
-        <a href="/" class="logo">
-            <i class="fa-solid fa-car-side"></i>
-            <div>Car Rental Management System <span style="font-size: 0.7rem; color: #94a3b8; display: block; font-weight: 400;">By Jayesh Bhavsar</span></div>
+        <a href="/" class="logo-box">
+            <div class="logo-icon-wrap">
+                <i class="fa-solid fa-car-side"></i>
+            </div>
+            <div class="logo-text">
+                <h2>JAY'S CARS</h2>
+                <span>Car Rental Management System</span>
+            </div>
         </a>
         <div class="nav-links">
             <a href="#features">Features</a>
@@ -233,13 +243,12 @@ LANDING_TEMPLATE = """
         </div>
     </section>
 
-    <!-- Professional Privacy & Policy Section -->
     <section id="privacy-policy" class="policy-section">
         <div class="policy-container">
             <h2>Privacy Policy & Terms of Service</h2>
             <span class="last-updated">Effective Date: January 1, 2026 | Managed by Jayesh Bhavsar</span>
             
-            <p>Welcome to the <strong>Car Rental Management System</strong>. We value your trust and are committed to protecting your personal information. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our platform and rental services in Amalner and across Maharashtra.</p>
+            <p>Welcome to <strong>JAY'S CARS (Car Rental Management System)</strong>. We value your trust and are committed to protecting your personal information. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our platform and rental services in Amalner and across Maharashtra.</p>
 
             <h3>1. Information We Collect</h3>
             <p>To provide seamless vehicle rentals and support, we may collect the following details:</p>
@@ -271,7 +280,7 @@ LANDING_TEMPLATE = """
     </section>
 
     <footer>
-        <p>&copy; 2026 <span>Car Rental Management System</span>. Built & Managed by Jayesh Bhavsar. All rights reserved.</p>
+        <p>&copy; 2026 <span>JAY'S CARS (Car Rental Management System)</span>. Built & Managed by Jayesh Bhavsar. All rights reserved.</p>
         <div class="footer-links">
             <a href="#privacy-policy">Privacy Policy</a>
             <a href="/contact">Support Center</a>
@@ -301,7 +310,7 @@ HTML_LAYOUT = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Rental Management System</title>
+    <title>JAY'S CARS - Car Rental Management System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -406,7 +415,7 @@ HTML_LAYOUT = """
     <div class="sidebar">
         <div class="sidebar-brand">
             <i class="fa-solid fa-car-side"></i>
-            <div>{{ owner['company'] }}<span>{{ owner['sub_title'] }}</span></div>
+            <div>JAY'S CARS<span>Management System</span></div>
         </div>
 
         <div class="sidebar-top-auth" style="margin-top: 15px;">
