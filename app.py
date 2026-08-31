@@ -89,18 +89,20 @@ LANDING_TEMPLATE = """
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
         body { background-color: #0b0f19; color: #ffffff; overflow-x: hidden; }
 
         .bg-carousel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; }
         .bg-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .bg-slide.active { opacity: 1; }
-        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(11, 15, 25, 0.92) 0%, rgba(15, 23, 42, 0.85) 100%); z-index: -1; }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(11, 15, 25, 0.94) 0%, rgba(15, 23, 42, 0.88) 100%); z-index: -1; }
 
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 6%; background: rgba(11, 15, 25, 0.75); backdrop-filter: blur(12px); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 6%; background: rgba(11, 15, 25, 0.85); backdrop-filter: blur(12px); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); }
         .logo { display: flex; align-items: center; gap: 12px; font-size: 1.25rem; font-weight: 800; color: #ffffff; text-decoration: none; }
         .logo i { color: #2563eb; font-size: 1.6rem; }
-        .nav-actions { display: flex; gap: 15px; align-items: center; }
+        .nav-links { display: flex; gap: 25px; align-items: center; }
+        .nav-links a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: color 0.3s; }
+        .nav-links a:hover { color: #ffffff; }
         .btn-primary-land { background: #2563eb; color: white; text-decoration: none; font-weight: 600; font-size: 0.9rem; padding: 10px 24px; border-radius: 8px; box-shadow: 0 4px 15px rgba(37,99,235,0.4); transition: all 0.3s; }
         .btn-primary-land:hover { background: #1d4ed8; transform: translateY(-2px); }
 
@@ -136,8 +138,21 @@ LANDING_TEMPLATE = """
         .feature-card-land h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
         .feature-card-land p { font-size: 0.9rem; color: #94a3b8; line-height: 1.6; }
 
-        footer { padding: 40px 6%; text-align: center; background: #070a12; border-top: 1px solid rgba(255,255,255,0.05); color: #64748b; font-size: 0.88rem; }
+        /* Privacy Policy Section Styles */
+        .policy-section { padding: 80px 6%; background: rgba(11, 15, 25, 0.95); border-top: 1px solid rgba(255,255,255,0.08); }
+        .policy-container { max-width: 900px; margin: 0 auto; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.1); padding: 50px; border-radius: 20px; backdrop-filter: blur(10px); }
+        .policy-container h2 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; color: #ffffff; }
+        .policy-container .last-updated { font-size: 0.85rem; color: #60a5fa; margin-bottom: 30px; display: block; }
+        .policy-container h3 { font-size: 1.15rem; font-weight: 700; margin: 25px 0 10px 0; color: #38bdf8; }
+        .policy-container p { font-size: 0.95rem; color: #94a3b8; line-height: 1.7; margin-bottom: 15px; }
+        .policy-container ul { margin-left: 20px; color: #94a3b8; margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6; }
+        .policy-container li { margin-bottom: 8px; }
+
+        footer { padding: 40px 6%; text-align: center; background: #070a12; border-top: 1px solid rgba(255,255,255,0.05); color: #64748b; font-size: 0.88rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         footer span { color: #ffffff; font-weight: 600; }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a { color: #94a3b8; text-decoration: none; font-size: 0.85rem; transition: color 0.3s; }
+        .footer-links a:hover { color: #ffffff; }
     </style>
 </head>
 <body>
@@ -155,7 +170,9 @@ LANDING_TEMPLATE = """
             <i class="fa-solid fa-car-side"></i>
             <div>Car Rental Management System <span style="font-size: 0.7rem; color: #94a3b8; display: block; font-weight: 400;">By Jayesh Bhavsar</span></div>
         </a>
-        <div class="nav-actions">
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#privacy-policy">Privacy Policy</a>
             <a href="/home" class="btn-primary-land"><i class="fa-solid fa-compass"></i> Open App / Fleet</a>
         </div>
     </nav>
@@ -192,7 +209,7 @@ LANDING_TEMPLATE = """
         </div>
     </section>
 
-    <section class="features-section">
+    <section id="features" class="features-section">
         <div class="section-title">
             <h2>Designed for Ultimate Reliability</h2>
             <p>Everything you need for a comfortable trip or secure business rental management.</p>
@@ -216,8 +233,50 @@ LANDING_TEMPLATE = """
         </div>
     </section>
 
+    <!-- Professional Privacy & Policy Section -->
+    <section id="privacy-policy" class="policy-section">
+        <div class="policy-container">
+            <h2>Privacy Policy & Terms of Service</h2>
+            <span class="last-updated">Effective Date: January 1, 2026 | Managed by Jayesh Bhavsar</span>
+            
+            <p>Welcome to the <strong>Car Rental Management System</strong>. We value your trust and are committed to protecting your personal information. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our platform and rental services in Amalner and across Maharashtra.</p>
+
+            <h3>1. Information We Collect</h3>
+            <p>To provide seamless vehicle rentals and support, we may collect the following details:</p>
+            <ul>
+                <li><strong>Personal Identification Data:</strong> Full name, email address, phone number, and residential address.</li>
+                <li><strong>Verification Documents:</strong> Valid Driving License details and government-approved identification for legal rental compliance.</li>
+                <li><strong>Trip & Location Data:</strong> Pickup/drop-off locations, rental dates, and live GPS telemetry data during active bookings for safety and tracking.</li>
+            </ul>
+
+            <h3>2. How We Use Your Information</h3>
+            <p>Your data is strictly utilized for core operational purposes, which include:</p>
+            <ul>
+                <li>Processing and verifying vehicle bookings and rental agreements.</li>
+                <li>Providing live GPS tracking for active trips and facilitating 24/7 roadside breakdown assistance.</li>
+                <li>Communicating booking confirmations, safety notices, and updates via direct messaging or WhatsApp.</li>
+            </ul>
+
+            <h3>3. Data Security & Protection</h3>
+            <p>We implement robust administrative and technical safeguards (including password hashing and secure session controls) to protect your data from unauthorized access, alteration, or disclosure. Your payment and bank records are handled with high security standards.</p>
+
+            <h3>4. Contact & Support</h3>
+            <p>If you have any questions, concerns, or requests regarding this Privacy Policy or your data privacy, you can directly reach out to our administration office:</p>
+            <ul>
+                <li><strong>Owner:</strong> Jayesh Harish Bhavsar</li>
+                <li><strong>Location:</strong> Gohil Nagar, Amalner, Maharashtra, India</li>
+                <li><strong>Helpline:</strong> +91 9765432442 | jayeshbhavsar997@gmail.com</li>
+            </ul>
+        </div>
+    </section>
+
     <footer>
         <p>&copy; 2026 <span>Car Rental Management System</span>. Built & Managed by Jayesh Bhavsar. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="#privacy-policy">Privacy Policy</a>
+            <a href="/contact">Support Center</a>
+            <a href="/home">App Dashboard</a>
+        </div>
     </footer>
 
     <script>
