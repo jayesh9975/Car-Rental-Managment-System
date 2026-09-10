@@ -36,26 +36,26 @@ VID_SAMPLE = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/
 
 # --- CAR MODELS DATABASE ---
 CARS_DATA = [
-    {"name": "Maruti WagonR", "price": 1500, "type": "Hatchback", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Maruti,WagonR?lock=20"},
-    {"name": "Maruti Dzire", "price": 1650, "type": "Sedan", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Maruti,Dzire?lock=10"},
-    {"name": "Maruti Ertiga", "price": 1900, "type": "MUV / SUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/Maruti,Ertiga?lock=1"},
-    {"name": "Tata Punch", "price": 1550, "type": "Mini SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Tata,Punch?lock=11"},
-    {"name": "Tata Nexon", "price": 1800, "type": "Compact SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Tata,Nexon?lock=7"},
-    {"name": "Mahindra Scorpio", "price": 2400, "type": "SUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/Mahindra,Scorpio?lock=4"},
-    {"name": "Maruti Eeco", "price": 1400, "type": "Van / Multi-utility", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/Maruti,Eeco?lock=19"},
-    {"name": "Maruti Fronx", "price": 1700, "type": "Crossover SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Maruti,Fronx?lock=13"},
-    {"name": "Hyundai Venue", "price": 1750, "type": "Compact SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Hyundai,Venue?lock=9"},
-    {"name": "Toyota Innova", "price": 2800, "type": "Premium MUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/Toyota,Innova?lock=18"},
-    {"name": "Maruti Baleno", "price": 1600, "type": "Premium Hatchback", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Maruti,Baleno?lock=2"},
-    {"name": "Mahindra Thar", "price": 2600, "type": "Off-road SUV", "seats": "4 Seater", "image": "https://loremflickr.com/800/600/Mahindra,Thar?lock=12"},
-    {"name": "Mahindra XUV700", "price": 2700, "type": "Luxury SUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/Mahindra,XUV700?lock=5"},
-    {"name": "Maruti Grand Vitara", "price": 2200, "type": "Hybrid SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Maruti,GrandVitara?lock=3"},
-    {"name": "Mahindra XUV 3XO", "price": 1850, "type": "Compact SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Mahindra,XUV,3XO?lock=6"},
-    {"name": "Mahindra Bolero", "price": 1700, "type": "Rugged SUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/Mahindra,Bolero?lock=16"},
-    {"name": "Tata Tiago", "price": 1450, "type": "Hatchback", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Tata,Tiago?lock=17"},
-    {"name": "Tata Curvv", "price": 2300, "type": "Coupe SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Tata,Curvv?lock=14"},
-    {"name": "Toyota Hyryder", "price": 2250, "type": "Hybrid SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Toyota,Hyryder?lock=8"},
-    {"name": "Hyundai i10 Nios", "price": 1500, "type": "City Hatchback", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Hyundai,i10,Nios?lock=15"}
+    {"name": "Maruti WagonR", "price": 1500, "type": "Hatchback", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Maruti,WagonR?lock=20"},
+    {"name": "Maruti Dzire", "price": 1650, "type": "Sedan", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Maruti,Dzire?lock=10"},
+    {"name": "Maruti Ertiga", "price": 1900, "type": "MUV / SUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Maruti,Ertiga?lock=1"},
+    {"name": "Tata Punch", "price": 1550, "type": "Mini SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Tata,Punch?lock=11"},
+    {"name": "Tata Nexon", "price": 1800, "type": "Compact SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Tata,Nexon?lock=7"},
+    {"name": "Mahindra Scorpio", "price": 2400, "type": "SUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Mahindra,Scorpio?lock=4"},
+    {"name": "Maruti Eeco", "price": 1400, "type": "Van / Multi-utility", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Maruti,Eeco?lock=19"},
+    {"name": "Maruti Fronx", "price": 1700, "type": "Crossover SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Maruti,Fronx?lock=13"},
+    {"name": "Hyundai Venue", "price": 1750, "type": "Compact SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Hyundai,Venue?lock=9"},
+    {"name": "Toyota Innova", "price": 2800, "type": "Premium MUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Toyota,Innova?lock=18"},
+    {"name": "Maruti Baleno", "price": 1600, "type": "Premium Hatchback", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Maruti,Baleno?lock=2"},
+    {"name": "Mahindra Thar", "price": 2600, "type": "Off-road SUV", "seats": "4 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Mahindra,Thar?lock=12"},
+    {"name": "Mahindra XUV700", "price": 2700, "type": "Luxury SUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Mahindra,XUV700?lock=5"},
+    {"name": "Maruti Grand Vitara", "price": 2200, "type": "Hybrid SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Maruti,GrandVitara?lock=3"},
+    {"name": "Mahindra XUV 3XO", "price": 1850, "type": "Compact SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Mahindra,XUV,3XO?lock=6"},
+    {"name": "Mahindra Bolero", "price": 1700, "type": "Rugged SUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Mahindra,Bolero?lock=16"},
+    {"name": "Tata Tiago", "price": 1450, "type": "Hatchback", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Tata,Tiago?lock=17"},
+    {"name": "Tata Curvv", "price": 2300, "type": "Coupe SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Tata,Curvv?lock=14"},
+    {"name": "Toyota Hyryder", "price": 2250, "type": "Hybrid SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Toyota,Hyryder?lock=8"},
+    {"name": "Hyundai i10 Nios", "price": 1500, "type": "City Hatchback", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/front,bonnet,Hyundai,i10,Nios?lock=15"}
 ]
 
 CARS = []
@@ -367,7 +367,9 @@ HTML_LAYOUT = """
         .car-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
         .car-card { background: white; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; cursor: pointer; display: flex; flex-direction: column; transition: all 0.35s ease; }
         .car-card:hover { transform: translateY(-6px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
-        .car-card img { width: 100%; height: 180px; object-fit: cover; background: #ffffff; transition: transform 0.5s ease; border-bottom: 1px solid #f1f5f9; }
+        .car-card .car-thumb { position: relative; height: 180px; overflow: hidden; background: #ffffff; border-bottom: 1px solid #f1f5f9; }
+        .car-card .car-thumb img { width: 100%; height: 100%; object-fit: cover; background: #ffffff; transition: transform 0.5s ease; }
+        .car-card .car-thumb::after { content: ''; position: absolute; left: 42%; bottom: 12%; width: 16%; height: 9%; background: rgba(30, 41, 59, 0.92); filter: blur(5px); border-radius: 3px; pointer-events: none; }
         .car-card:hover img { transform: scale(1.04); }
         .car-card-body { padding: 18px; display: flex; flex-direction: column; flex: 1; }
         .btn-book { display: block; width: 100%; text-align: center; background: #2563eb; color: white; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: 600; margin-top: auto; transition: background 0.3s; }
@@ -558,7 +560,7 @@ HTML_LAYOUT = """
                 <div class="car-grid">
                     {% for car in cars %}
                     <div class="car-card" onclick="openModal('{{ car['name'] }}', {{ car['photos']|tojson }}, {{ car['videos']|tojson }})">
-                        <img src="{{ car['image'] }}" alt="{{ car['name'] }}">
+                        <div class="car-thumb"><img src="{{ car['image'] }}" alt="{{ car['name'] }}"></div>
                         <div class="car-card-body">
                             <h3 style="font-size: 1.1rem;">{{ car['name'] }}</h3>
                             <p style="color: var(--text-muted); font-size: 0.85rem; margin: 5px 0;">{{ car['type'] }} | {{ car['seats'] }}</p>
@@ -1452,4 +1454,5 @@ def contact():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
 
