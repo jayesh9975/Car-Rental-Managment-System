@@ -3,7 +3,9 @@ from flask import Flask, render_template_string, request, redirect, url_for, ses
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
-app = Flask(__name__)
+# Resolve static assets relative to this file so thumbnails work under
+# Gunicorn even when the process is started from a different working folder.
+app = Flask(__name__, static_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)), "static"), static_url_path="/static")
 app.secret_key = 'car_rental_jayesh_bhavsar_bulletproof_final_2026'
 
 # --- Admin Credentials ---
@@ -61,6 +63,14 @@ CARS_DATA = [
 CARS = []
 for idx, item in enumerate(CARS_DATA, start=1):
     main_img = item["image"]
+    # Keep thumbnails working if an uploaded ZIP uses .jpg, .jpeg, .png, or .webp.
+    asset_name = main_img.rsplit("/", 1)[-1]
+    asset_stem = asset_name.rsplit(".", 1)[0]
+    for ext in ("jpg", "jpeg", "png", "webp"):
+        candidate = os.path.join(app.static_folder, "car_thumbnails", f"{asset_stem}.{ext}")
+        if os.path.exists(candidate):
+            main_img = f"/static/car_thumbnails/{asset_stem}.{ext}"
+            break
     photos = [main_img, main_img, main_img, main_img, main_img]
     videos = [VID_SAMPLE] * 5
     CARS.append({
@@ -560,7 +570,7 @@ HTML_LAYOUT = """
                 <div class="car-grid">
                     {% for car in cars %}
                     <div class="car-card" onclick="openModal('{{ car['name'] }}', {{ car['photos']|tojson }}, {{ car['videos']|tojson }})">
-                        <div class="car-thumb"><img src="{{ car['image'] }}" alt="{{ car['name'] }}"></div>
+                        <div class="car-thumb"><img src="{{ car['image'] }}" alt="{{ car['name'] }}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80';"></div>
                         <div class="car-card-body">
                             <h3 style="font-size: 1.1rem;">{{ car['name'] }}</h3>
                             <p style="color: var(--text-muted); font-size: 0.85rem; margin: 5px 0;">{{ car['type'] }} | {{ car['seats'] }}</p>
