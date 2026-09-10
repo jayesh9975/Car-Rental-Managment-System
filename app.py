@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template_string, request, redirect, url_for, session, flash
+from flask import Flask, render_template_string, request, redirect, url_for, session, flash, send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
@@ -69,7 +69,7 @@ for idx, item in enumerate(CARS_DATA, start=1):
     for ext in ("jpg", "jpeg", "png", "webp"):
         candidate = os.path.join(app.static_folder, "car_thumbnails", f"{asset_stem}.{ext}")
         if os.path.exists(candidate):
-            main_img = f"/static/car_thumbnails/{asset_stem}.{ext}"
+            main_img = f"/car-thumb/{asset_stem}.{ext}"
             break
     photos = [main_img, main_img, main_img, main_img, main_img]
     videos = [VID_SAMPLE] * 5
@@ -1173,6 +1173,11 @@ HTML_LAYOUT = """
 @app.route("/")
 def landing_page():
     return render_template_string(LANDING_TEMPLATE)
+
+@app.route("/car-thumb/<path:filename>")
+def car_thumbnail(filename):
+    """Serve uploaded car thumbnails through an explicit Flask endpoint."""
+    return send_from_directory(os.path.join(app.static_folder, "car_thumbnails"), filename)
 
 @app.route("/home")
 def home():
