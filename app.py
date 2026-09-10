@@ -1,5 +1,6 @@
 import os
-from flask import Flask, render_template_string, request, redirect, url_for, session, flash
+import base64
+from flask import Flask, render_template_string, request, redirect, url_for, session, flash, Response
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
@@ -63,6 +64,7 @@ CARS_DATA = [
 CARS = []
 for idx, item in enumerate(CARS_DATA, start=1):
     main_img = item["image"]
+    embedded_image = main_img
     # Keep thumbnails working if an uploaded ZIP uses .jpg, .jpeg, .png, or .webp.
     asset_name = main_img.rsplit("/", 1)[-1]
     asset_stem = asset_name.rsplit(".", 1)[0]
@@ -71,6 +73,8 @@ for idx, item in enumerate(CARS_DATA, start=1):
         if os.path.exists(candidate):
             main_img = f"/static/car_thumbnails/{asset_stem}.{ext}"
             break
+    # Serve embedded images through Flask so large data URIs are not placed in HTML.
+    main_img = f"/car-image/{idx}"
     photos = [main_img, main_img, main_img, main_img, main_img]
     videos = [VID_SAMPLE] * 5
     CARS.append({
@@ -83,6 +87,7 @@ for idx, item in enumerate(CARS_DATA, start=1):
         "image": main_img,
         "photos": photos,
         "videos": videos
+        ,"embedded_image": embedded_image
     })
 
 USERS_DB = {}
@@ -1173,6 +1178,15 @@ HTML_LAYOUT = """
 @app.route("/")
 def landing_page():
     return render_template_string(LANDING_TEMPLATE)
+
+@app.route("/car-image/<int:car_id>")
+def car_image(car_id):
+    car = next((c for c in CARS if c["id"] == car_id), None)
+    if not car or not car.get("embedded_image", "").startswith("data:image/"):
+        return Response(status=404)
+    header, encoded = car["embedded_image"].split(",", 1)
+    mime_type = header.split(";", 1)[0][5:]
+    return Response(base64.b64decode(encoded), mimetype=mime_type, headers={"Cache-Control": "public, max-age=86400"})
 
 @app.route("/home")
 def home():
