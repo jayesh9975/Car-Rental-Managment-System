@@ -64,7 +64,9 @@ CARS_DATA = [
 CARS = []
 for idx, item in enumerate(CARS_DATA, start=1):
     main_img = item["image"]
-    embedded_image = main_img
+    # The embedded base64 strings are plain base64; normalize any escaped
+    # characters introduced while generating the Python source.
+    embedded_image = main_img.replace("\\+", "+").replace("\\/", "/")
     # Keep thumbnails working if an uploaded ZIP uses .jpg, .jpeg, .png, or .webp.
     asset_name = main_img.rsplit("/", 1)[-1]
     asset_stem = asset_name.rsplit(".", 1)[0]
@@ -86,8 +88,8 @@ for idx, item in enumerate(CARS_DATA, start=1):
         "available": True,
         "image": main_img,
         "photos": photos,
-        "videos": videos
-        ,"embedded_image": embedded_image
+        "videos": videos,
+        "embedded_image": embedded_image
     })
 
 USERS_DB = {}
@@ -1478,4 +1480,3 @@ def contact():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
-
