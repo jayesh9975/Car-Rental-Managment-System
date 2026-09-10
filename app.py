@@ -38,26 +38,26 @@ VID_SAMPLE = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/
 
 # --- CAR MODELS DATABASE ---
 CARS_DATA = [
-    {"name": "Maruti WagonR", "price": 1500, "type": "Hatchback", "seats": "5 Seater", "image": "/static/car_thumbnails/maruti_wagonr.png"},
-    {"name": "Maruti Dzire", "price": 1650, "type": "Sedan", "seats": "5 Seater", "image": "/static/car_thumbnails/maruti_dzire.png"},
+    {"name": "Maruti WagonR", "price": 1500, "type": "Hatchback", "seats": "5 Seater", "image": "/static/car_thumbnails/maruti_wagonr.jpg"},
+    {"name": "Maruti Dzire", "price": 1650, "type": "Sedan", "seats": "5 Seater", "image": "/static/car_thumbnails/maruti_dzire.jpg"},
     {"name": "Maruti Ertiga", "price": 1900, "type": "MUV / SUV", "seats": "7 Seater", "image": "/static/car_thumbnails/maruti_ertiga.jpg"},
     {"name": "Tata Punch", "price": 1550, "type": "Mini SUV", "seats": "5 Seater", "image": "/static/car_thumbnails/tata_punch.jpg"},
-    {"name": "Tata Nexon", "price": 1800, "type": "Compact SUV", "seats": "5 Seater", "image": "/static/car_thumbnails/tata_nexon.png"},
+    {"name": "Tata Nexon", "price": 1800, "type": "Compact SUV", "seats": "5 Seater", "image": "/static/car_thumbnails/tata_nexon.jpg"},
     {"name": "Mahindra Scorpio", "price": 2400, "type": "SUV", "seats": "7 Seater", "image": "/static/car_thumbnails/mahindra_scorpio.jpg"},
-    {"name": "Maruti Eeco", "price": 1400, "type": "Van / Multi-utility", "seats": "7 Seater", "image": "/static/car_thumbnails/maruti_eeco.png"},
+    {"name": "Maruti Eeco", "price": 1400, "type": "Van / Multi-utility", "seats": "7 Seater", "image": "/static/car_thumbnails/maruti_eeco.jpg"},
     {"name": "Maruti Fronx", "price": 1700, "type": "Crossover SUV", "seats": "5 Seater", "image": "/static/car_thumbnails/maruti_fronx.jpg"},
-    {"name": "Hyundai Venue", "price": 1750, "type": "Compact SUV", "seats": "5 Seater", "image": "/static/car_thumbnails/hyundai_venue.webp"},
+    {"name": "Hyundai Venue", "price": 1750, "type": "Compact SUV", "seats": "5 Seater", "image": "/static/car_thumbnails/hyundai_venue.jpg"},
     {"name": "Toyota Innova", "price": 2800, "type": "Premium MUV", "seats": "7 Seater", "image": "/static/car_thumbnails/toyota_innova.jpg"},
     {"name": "Maruti Baleno", "price": 1600, "type": "Premium Hatchback", "seats": "5 Seater", "image": "/static/car_thumbnails/maruti_suzuki_baleno.jpg"},
     {"name": "Mahindra Thar", "price": 2600, "type": "Off-road SUV", "seats": "4 Seater", "image": "/static/car_thumbnails/mahindra_thar.jpg"},
     {"name": "Mahindra XUV700", "price": 2700, "type": "Luxury SUV", "seats": "7 Seater", "image": "/static/car_thumbnails/mahindra_xuv700.jpg"},
     {"name": "Maruti Grand Vitara", "price": 2200, "type": "Hybrid SUV", "seats": "5 Seater", "image": "/static/car_thumbnails/maruti_suzuki_grand_vitara.jpg"},
-    {"name": "Mahindra XUV 3XO", "price": 1850, "type": "Compact SUV", "seats": "5 Seater", "image": "/static/car_thumbnails/mahindra_xuv_3xo.png"},
+    {"name": "Mahindra XUV 3XO", "price": 1850, "type": "Compact SUV", "seats": "5 Seater", "image": "/static/car_thumbnails/mahindra_xuv_3xo.jpg"},
     {"name": "Mahindra Bolero", "price": 1700, "type": "Rugged SUV", "seats": "7 Seater", "image": "/static/car_thumbnails/mahindra_bolero.jpg"},
     {"name": "Tata Tiago", "price": 1450, "type": "Hatchback", "seats": "5 Seater", "image": "/static/car_thumbnails/tata_tiago.jpg"},
     {"name": "Tata Curvv", "price": 2300, "type": "Coupe SUV", "seats": "5 Seater", "image": "/static/car_thumbnails/tata_curvv.jpg"},
     {"name": "Toyota Hyryder", "price": 2250, "type": "Hybrid SUV", "seats": "5 Seater", "image": "/static/car_thumbnails/toyota_hyryder.jpg"},
-    {"name": "Hyundai i10 Nios", "price": 1500, "type": "City Hatchback", "seats": "5 Seater", "image": "/static/car_thumbnails/hyundai_grand_i10_nios.png"}
+    {"name": "Hyundai i10 Nios", "price": 1500, "type": "City Hatchback", "seats": "5 Seater", "image": "/static/car_thumbnails/hyundai_grand_i10_nios.jpg"}
 ]
 
 CARS = []
