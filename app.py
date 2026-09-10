@@ -36,26 +36,26 @@ VID_SAMPLE = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/
 
 # --- CAR MODELS DATABASE ---
 CARS_DATA = [
-    {"name": "Maruti WagonR", "price": 1500, "type": "Hatchback", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Maruti Dzire", "price": 1650, "type": "Sedan", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Maruti Ertiga", "price": 1900, "type": "MUV / SUV", "seats": "7 Seater", "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Tata Punch", "price": 1550, "type": "Mini SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Tata Nexon", "price": 1800, "type": "Compact SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Mahindra Scorpio", "price": 2400, "type": "SUV", "seats": "7 Seater", "image": "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Maruti Eeco", "price": 1400, "type": "Van / Multi-utility", "seats": "7 Seater", "image": "https://images.unsplash.com/photo-1485291571150-772bcfc10da5?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Maruti Fronx", "price": 1700, "type": "Crossover SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Hyundai Venue", "price": 1750, "type": "Compact SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Toyota Innova", "price": 2800, "type": "Premium MUV", "seats": "7 Seater", "image": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Maruti Baleno", "price": 1600, "type": "Premium Hatchback", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Mahindra Thar", "price": 2600, "type": "Off-road SUV", "seats": "4 Seater", "image": "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Mahindra XUV700", "price": 2700, "type": "Luxury SUV", "seats": "7 Seater", "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Maruti Grand Vitara", "price": 2200, "type": "Hybrid SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Mahindra XUV 3XO", "price": 1850, "type": "Compact SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Mahindra Bolero", "price": 1700, "type": "Rugged SUV", "seats": "7 Seater", "image": "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Tata Tiago", "price": 1450, "type": "Hatchback", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Tata Curvv", "price": 2300, "type": "Coupe SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Toyota Hyryder", "price": 2250, "type": "Hybrid SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=800&q=80"},
-    {"name": "Hyundai i10 Nios", "price": 1500, "type": "City Hatchback", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80"}
+    {"name": "Maruti WagonR", "price": 1500, "type": "Hatchback", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Maruti,WagonR?lock=20"},
+    {"name": "Maruti Dzire", "price": 1650, "type": "Sedan", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Maruti,Dzire?lock=10"},
+    {"name": "Maruti Ertiga", "price": 1900, "type": "MUV / SUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/Maruti,Ertiga?lock=1"},
+    {"name": "Tata Punch", "price": 1550, "type": "Mini SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Tata,Punch?lock=11"},
+    {"name": "Tata Nexon", "price": 1800, "type": "Compact SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Tata,Nexon?lock=7"},
+    {"name": "Mahindra Scorpio", "price": 2400, "type": "SUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/Mahindra,Scorpio?lock=4"},
+    {"name": "Maruti Eeco", "price": 1400, "type": "Van / Multi-utility", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/Maruti,Eeco?lock=19"},
+    {"name": "Maruti Fronx", "price": 1700, "type": "Crossover SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Maruti,Fronx?lock=13"},
+    {"name": "Hyundai Venue", "price": 1750, "type": "Compact SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Hyundai,Venue?lock=9"},
+    {"name": "Toyota Innova", "price": 2800, "type": "Premium MUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/Toyota,Innova?lock=18"},
+    {"name": "Maruti Baleno", "price": 1600, "type": "Premium Hatchback", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Maruti,Baleno?lock=2"},
+    {"name": "Mahindra Thar", "price": 2600, "type": "Off-road SUV", "seats": "4 Seater", "image": "https://loremflickr.com/800/600/Mahindra,Thar?lock=12"},
+    {"name": "Mahindra XUV700", "price": 2700, "type": "Luxury SUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/Mahindra,XUV700?lock=5"},
+    {"name": "Maruti Grand Vitara", "price": 2200, "type": "Hybrid SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Maruti,GrandVitara?lock=3"},
+    {"name": "Mahindra XUV 3XO", "price": 1850, "type": "Compact SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Mahindra,XUV,3XO?lock=6"},
+    {"name": "Mahindra Bolero", "price": 1700, "type": "Rugged SUV", "seats": "7 Seater", "image": "https://loremflickr.com/800/600/Mahindra,Bolero?lock=16"},
+    {"name": "Tata Tiago", "price": 1450, "type": "Hatchback", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Tata,Tiago?lock=17"},
+    {"name": "Tata Curvv", "price": 2300, "type": "Coupe SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Tata,Curvv?lock=14"},
+    {"name": "Toyota Hyryder", "price": 2250, "type": "Hybrid SUV", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Toyota,Hyryder?lock=8"},
+    {"name": "Hyundai i10 Nios", "price": 1500, "type": "City Hatchback", "seats": "5 Seater", "image": "https://loremflickr.com/800/600/Hyundai,i10,Nios?lock=15"}
 ]
 
 CARS = []
@@ -1452,3 +1452,4 @@ def contact():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
