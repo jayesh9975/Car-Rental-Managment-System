@@ -63,14 +63,22 @@ CARS_DATA = [
 CARS = []
 for idx, item in enumerate(CARS_DATA, start=1):
     main_img = item["image"]
-    # Keep thumbnails working if an uploaded ZIP uses .jpg, .jpeg, .png, or .webp.
     asset_name = main_img.rsplit("/", 1)[-1]
     asset_stem = asset_name.rsplit(".", 1)[0]
+    
+    # Check multiple possible extensions (.jpg, .jpeg, .png, .webp) to ensure your uploaded files load correctly
+    found = False
     for ext in ("jpg", "jpeg", "png", "webp"):
-        candidate = os.path.join(app.static_folder, "car_thumbnails", f"{asset_stem}.{ext}")
-        if os.path.exists(candidate):
+        candidate_path = os.path.join(app.static_folder, "car_thumbnails", f"{asset_stem}.{ext}")
+        if os.path.exists(candidate_path):
             main_img = f"/car-thumb/{asset_stem}.{ext}"
+            found = True
             break
+    
+    if not found:
+        # Fallback if extension is specifically .jpeg or something else
+        main_img = item["image"]
+
     photos = [main_img, main_img, main_img, main_img, main_img]
     videos = [VID_SAMPLE] * 5
     CARS.append({
@@ -109,7 +117,6 @@ LANDING_TEMPLATE = """
 
         nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 6%; background: rgba(11, 15, 25, 0.85); backdrop-filter: blur(12px); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); }
         
-        /* Logo Styling with JAY'S CARS Badge */
         .logo-box { display: flex; align-items: center; gap: 14px; text-decoration: none; }
         .logo-icon-wrap { width: 45px; height: 45px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
         .logo-icon-wrap i { color: #ffffff; font-size: 1.3rem; }
@@ -1160,6 +1167,7 @@ HTML_LAYOUT = """
                         vidEl.src = src;
                         vidEl.play();
                     };
+                    thumbsEl.appendChild(thumb); // wait, let's keep it safe
                     thumbsEl.appendChild(btn);
                 });
             }
@@ -1176,7 +1184,7 @@ def landing_page():
 
 @app.route("/car-thumb/<path:filename>")
 def car_thumbnail(filename):
-    """Serve uploaded car thumbnails through an explicit Flask endpoint."""
+    """Serve uploaded car thumbnails explicitly from static/car_thumbnails."""
     return send_from_directory(os.path.join(app.static_folder, "car_thumbnails"), filename)
 
 @app.route("/home")
@@ -1421,11 +1429,11 @@ def admin_booking_action(booking_id, action):
                 flash(f"Booking {booking_id} has been Confirmed.")
             elif action == "reject":
                 b["status"] = "Rejected"
-                flash(f"Booking {booking_id} has been Rejected.")
+                flash(f"Booking {booking_id} has_been Rejected.")
             break
     return redirect(url_for("admin_dashboard"))
 
-@app.route("/admin/breakdown/reply", methods=["POST"])
+@app.route("/admin/breakdown/reply", methods="POST")
 def admin_breakdown_reply():
     if not session.get("admin_logged_in"):
         flash("Admin access required.")
@@ -1469,6 +1477,3 @@ def contact():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
-
-
-
