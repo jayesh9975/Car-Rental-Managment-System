@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template_string, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'car_rental_jayesh_bhavsar_bulletproof_final_2026'
@@ -13,60 +14,60 @@ ADMIN_USER = {
 
 # --- Owner Info ---
 OWNER_INFO = {
-    "name": "Jayesh Bhavsar",
+    "name": "Jayesh Harish Bhavsar",
     "company": "Car Rental Management System",
     "sub_title": "By Jayesh Bhavsar",
     "phone": "+919765432442",
     "phone_display": "+91 9765432442",
     "email": "jayeshbhavsar997@gmail.com",
-    "address": "Goil Nagar, Amalner, Maharashtra, India"
+    "address": "Gohil Nagar, Amalner, Maharashtra, India"
 }
 
 # --- Bank & Withdrawal Info Storage (Default) ---
 ADMIN_BANK_INFO = {
-    "account_name": "Jayesh Bhavsar",
-    "bank_name": "State Bank of India",
-    "account_number": "XXXXXXXX1234",
-    "ifsc_code": "SBIN000XXXX",
+    "account_name": "Jayesh Harish Bhavsar",
+    "bank_name": "BANK OF BARODA",
+    "account_number": "1228000012608",
+    "ifsc_code": "BARB0AMALNE",
     "upi_id": "jayeshbhavsar@oksbi"
 }
 
 VID_SAMPLE = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
 
-# Exact Top 25 Car Names mapped with their specific original high-res model image URLs
+# --- CAR MODELS DATABASE ---
 CARS_DATA = [
-    {"name": "Maruti WagonR", "price": 1500, "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600"},
-    {"name": "Maruti Dzire", "price": 1650, "image": "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600"},
-    {"name": "Maruti Ertiga", "price": 1900, "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600"},
-    {"name": "Tata Punch", "price": 1550, "image": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600"},
-    {"name": "Tata Nexon", "price": 1800, "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600"},
-    {"name": "Mahindra Scorpio", "price": 2400, "image": "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600"},
-    {"name": "Maruti Eeco", "price": 1400, "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600"},
-    {"name": "Maruti Fronx", "price": 1700, "image": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600"},
-    {"name": "Hyundai Venue", "price": 1750, "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600"},
-    {"name": "Toyota Innova", "price": 2800, "image": "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600"},
-    {"name": "Maruti Baleno", "price": 1600, "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600"},
-    {"name": "Mahindra Thar", "price": 2600, "image": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600"},
-    {"name": "Mahindra XUV700", "price": 2700, "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600"},
-    {"name": "Maruti Grand Vitara", "price": 2200, "image": "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600"},
-    {"name": "Mahindra XUV 3XO", "price": 1850, "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600"},
-    {"name": "Mahindra Bolero", "price": 1700, "image": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600"},
-    {"name": "Tata Tiago", "price": 1450, "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600"},
-    {"name": "Tata Curvv", "price": 2300, "image": "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600"},
-    {"name": "Toyota Hyryder", "price": 2250, "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600"},
-    {"name": "Hyundai i10 Nios", "price": 1500, "image": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600"}
+    {"name": "Maruti WagonR", "price": 1500, "type": "Hatchback", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Maruti Dzire", "price": 1650, "type": "Sedan", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Maruti Ertiga", "price": 1900, "type": "MUV / SUV", "seats": "7 Seater", "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Tata Punch", "price": 1550, "type": "Mini SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Tata Nexon", "price": 1800, "type": "Compact SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Mahindra Scorpio", "price": 2400, "type": "SUV", "seats": "7 Seater", "image": "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Maruti Eeco", "price": 1400, "type": "Van / Multi-utility", "seats": "7 Seater", "image": "https://images.unsplash.com/photo-1485291571150-772bcfc10da5?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Maruti Fronx", "price": 1700, "type": "Crossover SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Hyundai Venue", "price": 1750, "type": "Compact SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Toyota Innova", "price": 2800, "type": "Premium MUV", "seats": "7 Seater", "image": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Maruti Baleno", "price": 1600, "type": "Premium Hatchback", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Mahindra Thar", "price": 2600, "type": "Off-road SUV", "seats": "4 Seater", "image": "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Mahindra XUV700", "price": 2700, "type": "Luxury SUV", "seats": "7 Seater", "image": "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Maruti Grand Vitara", "price": 2200, "type": "Hybrid SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Mahindra XUV 3XO", "price": 1850, "type": "Compact SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Mahindra Bolero", "price": 1700, "type": "Rugged SUV", "seats": "7 Seater", "image": "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Tata Tiago", "price": 1450, "type": "Hatchback", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Tata Curvv", "price": 2300, "type": "Coupe SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Toyota Hyryder", "price": 2250, "type": "Hybrid SUV", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Hyundai i10 Nios", "price": 1500, "type": "City Hatchback", "seats": "5 Seater", "image": "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80"}
 ]
 
 CARS = []
 for idx, item in enumerate(CARS_DATA, start=1):
     main_img = item["image"]
-    photos = [main_img, "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600", "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=600", "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600", main_img]
+    photos = [main_img, main_img, main_img, main_img, main_img]
     videos = [VID_SAMPLE] * 5
     CARS.append({
         "id": idx,
         "name": item["name"],
-        "type": "SUV / Sedan / Hatchback",
-        "seats": "5 Seater",
+        "type": item["type"],
+        "seats": item["seats"],
         "price": item["price"],
         "available": True,
         "image": main_img,
@@ -78,6 +79,172 @@ USERS_DB = {}
 BOOKINGS = []
 BREAKDOWN_REQUESTS = []
 
+# --- Landing Page Template with Dynamic Background Carousel & Clean Header ---
+LANDING_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental Management System - Premium Ride Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: #0b0f19; color: #ffffff; overflow-x: hidden; }
+
+        /* Background Carousel Overlay Setup */
+        .bg-carousel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; }
+        .bg-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
+        .bg-slide.active { opacity: 1; }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(11, 15, 25, 0.92) 0%, rgba(15, 23, 42, 0.85) 100%); z-index: -1; }
+
+        /* Navigation Bar */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 6%; background: rgba(11, 15, 25, 0.75); backdrop-filter: blur(12px); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .logo { display: flex; align-items: center; gap: 12px; font-size: 1.3rem; font-weight: 800; color: #ffffff; text-decoration: none; }
+        .logo i { color: #2563eb; font-size: 1.6rem; }
+        .nav-actions { display: flex; gap: 15px; align-items: center; }
+        .btn-primary-land { background: #2563eb; color: white; text-decoration: none; font-weight: 600; font-size: 0.9rem; padding: 10px 24px; border-radius: 8px; box-shadow: 0 4px 15px rgba(37,99,235,0.4); transition: all 0.3s; }
+        .btn-primary-land:hover { background: #1d4ed8; transform: translateY(-2px); }
+
+        /* Hero Section */
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: space-between; padding: 140px 6% 80px 6%; }
+        .hero-left { max-width: 650px; }
+        .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(37,99,235,0.2); color: #60a5fa; padding: 6px 14px; border-radius: 30px; font-size: 0.85rem; font-weight: 700; margin-bottom: 25px; border: 1px solid rgba(37,99,235,0.4); }
+        .hero-left h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.15; margin-bottom: 20px; letter-spacing: -1px; }
+        .hero-left h1 span { color: #3b82f6; }
+        .hero-left p { font-size: 1.1rem; color: #cbd5e1; line-height: 1.7; margin-bottom: 35px; }
+        .hero-btns { display: flex; gap: 15px; }
+        .cta-main { background: #2563eb; color: white; padding: 16px 32px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 1rem; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(37,99,235,0.4); transition: all 0.3s; }
+        .cta-main:hover { background: #1d4ed8; transform: translateY(-3px); }
+        .cta-sec { background: rgba(255,255,255,0.08); color: white; padding: 16px 32px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 1rem; border: 1px solid rgba(255,255,255,0.15); transition: all 0.3s; }
+        .cta-sec:hover { background: rgba(255,255,255,0.15); }
+
+        /* Hero Right Visual Card */
+        .hero-right { position: relative; }
+        .floating-card { background: rgba(30, 41, 59, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.12); padding: 30px; border-radius: 20px; width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .floating-card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: rgba(15, 23, 42, 0.7); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); }
+        .stat-box h4 { font-size: 1.5rem; font-weight: 800; color: #60a5fa; }
+        .stat-box p { font-size: 0.8rem; color: #94a3b8; margin-top: 4px; }
+
+        /* Features Section */
+        .features-section { padding: 80px 6%; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.08); }
+        .section-title { text-align: center; max-width: 600px; margin: 0 auto 60px auto; }
+        .section-title h2 { font-size: 2.3rem; font-weight: 800; margin-bottom: 15px; letter-spacing: -0.5px; }
+        .section-title p { color: #94a3b8; font-size: 1rem; }
+       
+        .grid-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; }
+        .feature-card-land { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.08); padding: 35px 30px; border-radius: 16px; transition: transform 0.3s, border-color 0.3s; }
+        .feature-card-land:hover { transform: translateY(-8px); border-color: rgba(37,99,235,0.6); background: rgba(30, 41, 59, 0.8); }
+        .feature-card-land i { font-size: 2.2rem; color: #3b82f6; margin-bottom: 20px; background: rgba(59,130,246,0.15); padding: 16px; border-radius: 12px; }
+        .feature-card-land h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+        .feature-card-land p { font-size: 0.9rem; color: #94a3b8; line-height: 1.6; }
+
+        /* Footer */
+        footer { padding: 40px 6%; text-align: center; background: #070a12; border-top: 1px solid rgba(255,255,255,0.05); color: #64748b; font-size: 0.88rem; }
+        footer span { color: #ffffff; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <!-- Dynamic Background Image Carousel -->
+    <div class="bg-carousel">
+        <div class="bg-slide active" style="background-image: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1920&q=80');"></div>
+    </div>
+    <div class="bg-overlay"></div>
+
+    <nav>
+        <a href="/" class="logo">
+            <i class="fa-solid fa-car-side"></i>
+            <div>Car Rental Pro <span style="font-size: 0.7rem; color: #94a3b8; display: block; font-weight: 400;">By Jayesh Bhavsar</span></div>
+        </a>
+        <div class="nav-actions">
+            <a href="/home" class="btn-primary-land"><i class="fa-solid fa-compass"></i> Open App / Fleet</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-left">
+            <div class="badge"><i class="fa-solid fa-bolt"></i> Maharashtra's Premier Mobility Platform</div>
+            <h1>Smart, Safe & Seamless <span>Car Rentals</span> on Demand</h1>
+            <p>Experience ultra-modern travel with verified fleet vehicles, live GPS telemetry tracking, transparent daily pricing, and 24/7 dedicated roadside assistance managed by Jayesh Bhavsar.</p>
+            <div class="hero-btns">
+                <a href="/home" class="cta-main"><i class="fa-solid fa-compass"></i> Explore Fleet Now <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="/customer/register" class="cta-sec">Create Account</a>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <div class="floating-card">
+                <h3><i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> Trusted System Specs</h3>
+                <div class="stat-row">
+                    <div class="stat-box">
+                        <h4>20+</h4>
+                        <p>Verified Vehicles</p>
+                    </div>
+                    <div class="stat-box">
+                        <h4>24/7</h4>
+                        <p>SOS Support</p>
+                    </div>
+                </div>
+                <div style="background: rgba(15,23,42,0.7); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+                    <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 6px;"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> Operations Hub</div>
+                    <div style="font-size: 0.9rem; font-weight: 600; color: white;">Gohil Nagar, Amalner, Maharashtra</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="section-title">
+            <h2>Designed for Ultimate Reliability</h2>
+            <p>Everything you need for a comfortable trip or secure business rental management.</p>
+        </div>
+        <div class="grid-features">
+            <div class="feature-card-land">
+                <i class="fa-solid fa-satellite-dish"></i>
+                <h3>Live GPS Telemetry</h3>
+                <p>Track your rented vehicles in real-time right from your customer dashboard with live map markers.</p>
+            </div>
+            <div class="feature-card-land">
+                <i class="fa-solid fa-headset"></i>
+                <h3>Instant Roadside SOS</h3>
+                <p>Encountered a flat tyre or engine issue? Request emergency assistance with automated admin dispatch.</p>
+            </div>
+            <div class="feature-card-land">
+                <i class="fa-solid fa-indian-rupee-sign"></i>
+                <h3>Zero Hidden Fees</h3>
+                <p>Crystal-clear rental rates per day with total cost previews and instant WhatsApp booking confirmation.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 <span>Car Rental Management System</span>. Built & Managed by Jayesh Bhavsar. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Automatic Background Image Carousel Script
+        let slides = document.querySelectorAll('.bg-slide');
+        let currentSlide = 0;
+       
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+       
+        setInterval(nextSlide, 5000); // Change image every 5 seconds
+    </script>
+</body>
+</html>
+"""
+
 HTML_LAYOUT = """
 <!DOCTYPE html>
 <html lang="en">
@@ -87,7 +254,6 @@ HTML_LAYOUT = """
     <title>Car Rental Management System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Leaflet CSS for Interactive OpenStreetMap Live Tracking -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
@@ -95,42 +261,58 @@ HTML_LAYOUT = """
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-main); color: var(--text-dark); display: flex; min-height: 100vh; overflow-x: hidden; }
 
+        .content-body { animation: fadeInUp 0.4s ease-in-out; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .sidebar { width: 250px; background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; padding: 20px 15px; flex-shrink: 0; }
         .sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 10px 5px 25px 5px; border-bottom: 1px solid #1e293b; }
         .sidebar-brand i { font-size: 1.8rem; color: #2563eb; }
         .sidebar-brand div { font-size: 1.1rem; font-weight: 700; }
         .sidebar-brand span { font-size: 0.75rem; color: #94a3b8; display: block; }
 
-        .nav-list { list-style: none; margin-top: 20px; display: flex; flex-direction: column; gap: 6px; }
-        .nav-item a { display: flex; align-items: center; gap: 14px; padding: 12px 16px; color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; border-radius: 8px; transition: all 0.3s; }
-        .nav-item.active a, .nav-item a:hover { background: var(--sidebar-active); color: white; }
+        .sidebar-top-auth { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #1e293b; }
+
+        .nav-list { list-style: none; margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .nav-item a { display: flex; align-items: center; gap: 14px; padding: 12px 16px; color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; border-radius: 8px; transition: all 0.3s ease; }
+        .nav-item.active a, .nav-item a:hover { background: var(--sidebar-active); color: white; transform: translateX(4px); }
         .sidebar-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid #1e293b; font-size: 0.85rem; color: #64748b; }
 
         .main-wrapper { flex: 1; display: flex; flex-direction: column; }
-        .top-header { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; }
+        .top-header { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .top-header h2 { font-size: 1.3rem; font-weight: 700; color: #0f172a; }
         .content-body { padding: 25px 30px; flex: 1; }
 
-        /* Landing Page Styles */
-        .hero-banner { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 50px 40px; border-radius: 16px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .hero-banner { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 50px 40px; border-radius: 16px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; box-shadow: 0 10px 25px rgba(37,99,235,0.15); }
         .hero-content { max-width: 600px; }
         .hero-content h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; line-height: 1.2; }
         .hero-content p { font-size: 1rem; color: #cbd5e1; margin-bottom: 20px; line-height: 1.6; }
-        .hero-btn { background: #2563eb; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; transition: background 0.3s; }
-        .hero-btn:hover { background: #1d4ed8; }
+        .hero-btn { background: #2563eb; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+        .hero-btn:hover { background: #1d4ed8; transform: translateY(-2px); }
+
+        .hero-icon-anim { font-size: 7rem; color: #3b82f6; animation: floatCar 3s ease-in-out infinite; }
+        @keyframes floatCar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
 
         .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 35px; }
-        .feature-box { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; text-align: center; }
+        .feature-box { background: white; padding: 22px; border-radius: 12px; border: 1px solid #e2e8f0; text-align: center; transition: all 0.3s ease; }
+        .feature-box:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.06); }
         .feature-box i { font-size: 2rem; color: #2563eb; margin-bottom: 12px; }
         .feature-box h4 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
         .feature-box p { font-size: 0.85rem; color: #64748b; }
 
         .car-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
-        .car-card { background: white; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; cursor: pointer; display: flex; flex-direction: column; transition: all 0.3s ease; }
-        .car-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-        .car-card img { width: 100%; height: 180px; object-fit: cover; background: #0f172a; }
+        .car-card { background: white; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; cursor: pointer; display: flex; flex-direction: column; transition: all 0.35s ease; }
+        .car-card:hover { transform: translateY(-6px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+        .car-card img { width: 100%; height: 180px; object-fit: cover; background: #ffffff; transition: transform 0.5s ease; border-bottom: 1px solid #f1f5f9; }
+        .car-card:hover img { transform: scale(1.04); }
         .car-card-body { padding: 18px; display: flex; flex-direction: column; flex: 1; }
-        .btn-book { display: block; width: 100%; text-align: center; background: #2563eb; color: white; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: 600; margin-top: auto; }
+        .btn-book { display: block; width: 100%; text-align: center; background: #2563eb; color: white; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: 600; margin-top: auto; transition: background 0.3s; }
+        .btn-book:hover { background: #1d4ed8; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px; }
         .stat-card { background: white; padding: 20px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #f1f5f9; }
@@ -140,28 +322,29 @@ HTML_LAYOUT = """
 
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.85); overflow-y: auto; }
         .modal-content { background: white; margin: 30px auto; padding: 25px; border-radius: 16px; max-width: 800px; width: 90%; position: relative; }
+
         .close { position: absolute; right: 20px; top: 15px; font-size: 24px; cursor: pointer; }
+        .close:hover { color: #ef4444; }
         .tab-btn { padding: 8px 16px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; cursor: pointer; font-weight: 600; margin-right: 8px; margin-bottom: 15px; }
-        .tab-btn.active { background: #2563eb; color: white; }
-        .main-media { width: 100%; height: 350px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; background: #000; }
+        .tab-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
+        .main-media { width: 100%; height: 350px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; background: #fff; border: 1px solid #e2e8f0; }
         .thumbs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
         .thumb-img { width: 100%; height: 70px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; }
         .thumb-img.active { border-color: #2563eb; }
 
-        .form-box { background: white; padding: 30px; border-radius: 12px; max-width: 500px; margin: 20px auto; border: 1px solid #e2e8f0; position: relative; }
+        .form-box { background: white; padding: 30px; border-radius: 12px; max-width: 500px; margin: 20px auto; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .form-group { margin-bottom: 18px; position: relative; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.88rem; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; }
-        .btn-submit { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2563eb; outline: none; }
+        .btn-submit { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.3s; }
+        .btn-submit:hover { background: #1d4ed8; }
 
-        /* Suggestions Dropdown Style */
-        .suggestions-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 6px 6px; max-height: 180px; overflow-y: auto; z-index: 99; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .suggestions-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 6px 6px; max-height: 180px; overflow-y: auto; z-index: 99; box-shadow: 0 6px 12px rgba(0,0,0,0.08); }
         .suggestion-item { padding: 10px 12px; font-size: 0.88rem; cursor: pointer; border-bottom: 1px solid #f1f5f9; }
-        .suggestion-item:hover { background: #f1f5f9; }
+        .suggestion-item:hover { background: #eff6ff; color: #2563eb; }
 
-        /* Map styling for live tracking */
         #liveMap { width: 100%; height: 350px; border-radius: 10px; margin-top: 15px; border: 1px solid #cbd5e1; }
-
         .table-card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #f1f5f9; margin-bottom: 25px; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); padding: 12px 10px; border-bottom: 1px solid #e2e8f0; }
@@ -176,9 +359,32 @@ HTML_LAYOUT = """
             <div>{{ owner['company'] }}<span>{{ owner['sub_title'] }}</span></div>
         </div>
 
+        <div class="sidebar-top-auth" style="margin-top: 15px;">
+            {% if session.get('customer_user') %}
+                <div style="background: #1e293b; padding: 10px; border-radius: 8px; border: 1px solid #334155;">
+                    <p style="font-size: 0.85rem; color: #94a3b8;"><i class="fa-solid fa-circle-user" style="color: #3b82f6;"></i> Logged In As:</p>
+                    <p style="font-size: 0.9rem; font-weight: 600; color: white; margin: 4px 0;">{{ session['customer_user']['name'] }}</p>
+                    <a href="/customer/logout" style="color: #ef4444; text-decoration: none; font-size: 0.82rem; font-weight: 600; display: inline-block; margin-top: 4px;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                </div>
+            {% elif session.get('admin_logged_in') %}
+                <div style="background: #1e293b; padding: 10px; border-radius: 8px; border: 1px solid #334155;">
+                    <p style="font-size: 0.85rem; color: #94a3b8;"><i class="fa-solid fa-user-shield" style="color: #10b981;"></i> Admin Panel Active</p>
+                    <a href="/admin/logout" style="color: #ef4444; text-decoration: none; font-size: 0.82rem; font-weight: 600; display: inline-block; margin-top: 4px;"><i class="fa-solid fa-right-from-bracket"></i> Admin Logout</a>
+                </div>
+            {% else %}
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <a href="/customer/login" style="background: #2563eb; color: white; text-decoration: none; font-size: 0.85rem; font-weight: 600; padding: 8px 12px; border-radius: 6px; text-align: center;"><i class="fa-solid fa-right-to-bracket"></i> Customer Login</a>
+                    <a href="/customer/register" style="background: #334155; color: white; text-decoration: none; font-size: 0.82rem; font-weight: 500; padding: 6px 12px; border-radius: 6px; text-align: center;"><i class="fa-solid fa-user-plus"></i> Register</a>
+                </div>
+            {% endif %}
+        </div>
+
         <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/"><i class="fa-solid fa-globe"></i> Landing Page</a>
+            </li>
             <li class="nav-item {% if page == 'home' %}active{% endif %}">
-                <a href="/"><i class="fa-solid fa-house"></i> Home & Fleet</a>
+                <a href="/home"><i class="fa-solid fa-house"></i> Home & Fleet</a>
             </li>
             {% if session.get('customer_user') %}
             <li class="nav-item {% if page == 'my_bookings' %}active{% endif %}">
@@ -188,9 +394,11 @@ HTML_LAYOUT = """
                 <a href="/customer/breakdown"><i class="fa-solid fa-triangle-exclamation"></i> Breakdown Support</a>
             </li>
             {% endif %}
+           
             <li class="nav-item {% if page == 'dashboard' %}active{% endif %}">
                 <a href="/admin/dashboard"><i class="fa-solid fa-gauge"></i> Admin Dashboard</a>
             </li>
+
             {% if session.get('admin_logged_in') %}
             <li class="nav-item {% if page == 'admin_bank' %}active{% endif %}">
                 <a href="/admin/bank-payments"><i class="fa-solid fa-building-columns"></i> Bank & Payments</a>
@@ -202,15 +410,8 @@ HTML_LAYOUT = """
         </ul>
 
         <div class="sidebar-footer">
-            {% if session.get('admin_logged_in') %}
-                <p><i class="fa-solid fa-user-shield" style="color: #10b981;"></i> Admin Active</p>
-                <a href="/admin/logout" style="color: #ef4444; text-decoration: none; font-weight: 600; display: block; margin-top: 8px;">Admin Logout</a>
-            {% elif session.get('customer_user') %}
-                <p><i class="fa-solid fa-user" style="color: #3b82f6;"></i> User: {{ session['customer_user']['name'] }}</p>
-                <a href="/customer/logout" style="color: #ef4444; text-decoration: none; font-weight: 600; display: block; margin-top: 8px;">Customer Logout</a>
-            {% else %}
-                <a href="/customer/login" style="color: #3b82f6; text-decoration: none; font-weight: 600; display: block;">Customer Login / Register</a>
-                <a href="/admin/login" style="color: #64748b; text-decoration: none; font-weight: 500; display: block; margin-top: 8px;">Admin Login</a>
+            {% if not session.get('customer_user') and not session.get('admin_logged_in') %}
+                <a href="/admin/login" style="color: #94a3b8; text-decoration: none; font-size: 0.85rem; display: block;"><i class="fa-solid fa-user-shield"></i> Admin Login</a>
             {% endif %}
         </div>
     </div>
@@ -218,11 +419,19 @@ HTML_LAYOUT = """
     <div class="main-wrapper">
         <div class="top-header">
             <h2>{{ title }}</h2>
-            <div>
+            <div style="display: flex; align-items: center; gap: 12px;">
                 {% if session.get('customer_user') %}
-                    <span style="font-weight: 600; color: #2563eb;"><i class="fa-solid fa-circle-user"></i> {{ session['customer_user']['name'] }}</span>
+                    <span style="font-weight: 600; color: #2563eb; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-circle-user"></i> {{ session['customer_user']['name'] }}
+                    </span>
+                    <a href="/customer/logout" style="background: #fee2e2; color: #991b1b; padding: 5px 12px; border-radius: 6px; text-decoration: none; font-size: 0.82rem; font-weight: 600;">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </a>
                 {% elif session.get('admin_logged_in') %}
                     <span style="font-weight: 600; color: #10b981;"><i class="fa-solid fa-user-shield"></i> Admin Panel</span>
+                    <a href="/admin/logout" style="background: #fee2e2; color: #991b1b; padding: 5px 12px; border-radius: 6px; text-decoration: none; font-size: 0.82rem; font-weight: 600;">
+                        Logout
+                    </a>
                 {% else %}
                     <a href="/customer/login" style="text-decoration: none; font-weight: 600; color: #2563eb; margin-right: 15px;">Customer Login</a>
                     <a href="/admin/login" style="text-decoration: none; font-weight: 600; color: #64748b;">Admin Login</a>
@@ -232,35 +441,33 @@ HTML_LAYOUT = """
 
         <div class="content-body">
             {% for message in get_flashed_messages() %}
-                <div style="padding: 15px; background: #d1fae5; color: #065f46; border-radius: 8px; margin-bottom: 20px; font-weight: 600;">
+                <div style="padding: 15px; background: #d1fae5; color: #065f46; border-radius: 8px; margin-bottom: 20px; font-weight: 600; box-shadow: 0 3px 10px rgba(0,0,0,0.04);">
                     <i class="fa-solid fa-circle-check"></i> {{ message }}
                     {% if session.get('last_booking_msg') %}
                     <div style="margin-top: 10px;">
-                        <a href="https://wa.me/{{ owner['phone'] }}?text={{ session.get('last_booking_msg') }}" target="_blank" style="background: #10b981; color: white; padding: 8px 14px; text-decoration: none; border-radius: 6px;"><i class="fa-brands fa-whatsapp"></i> Send WhatsApp Booking Notification</a>
+                        <a href="https://wa.me/919765432442?text={{ session.get('last_booking_msg') }}" target="_blank" style="background: #10b981; color: white; padding: 8px 14px; text-decoration: none; border-radius: 6px; display: inline-block;"><i class="fa-brands fa-whatsapp"></i> Send WhatsApp Booking to Owner (+919765432442)</a>
                     </div>
                     {% endif %}
                     {% if session.get('last_breakdown_msg') %}
                     <div style="margin-top: 10px;">
-                        <a href="https://wa.me/{{ owner['phone'] }}?text={{ session.get('last_breakdown_msg') }}" target="_blank" style="background: #ef4444; color: white; padding: 8px 14px; text-decoration: none; border-radius: 6px;"><i class="fa-brands fa-whatsapp"></i> Send Emergency WhatsApp SOS</a>
+                        <a href="https://wa.me/919765432442?text={{ session.get('last_breakdown_msg') }}" target="_blank" style="background: #ef4444; color: white; padding: 8px 14px; text-decoration: none; border-radius: 6px; display: inline-block;"><i class="fa-brands fa-whatsapp"></i> Send Emergency WhatsApp SOS to Owner</a>
                     </div>
                     {% endif %}
                 </div>
             {% endfor %}
 
             {% if page == 'home' %}
-                <!-- Landing Page Hero Banner -->
                 <div class="hero-banner">
                     <div class="hero-content">
                         <h1>Experience the Best Car Rental Service in Maharashtra</h1>
-                        <p>Choose from our top-tier fleet of 25+ verified vehicles. Enjoy seamless booking, live GPS route tracking, and 24/7 roadside breakdown assistance managed by Jayesh Bhavsar.</p>
+                        <p>Choose from our top-tier fleet of 20 verified vehicles. Enjoy seamless booking, live GPS route tracking, and 24/7 roadside breakdown assistance managed by Jayesh Bhavsar.</p>
                         <a href="#fleetSection" class="hero-btn"><i class="fa-solid fa-car"></i> Explore Fleet Now</a>
                     </div>
                     <div>
-                        <i class="fa-solid fa-car-side" style="font-size: 7rem; color: #3b82f6; opacity: 0.9;"></i>
+                        <i class="fa-solid fa-car-side hero-icon-anim"></i>
                     </div>
                 </div>
 
-                <!-- Features Highlights -->
                 <div class="features-grid">
                     <div class="feature-box">
                         <i class="fa-solid fa-shield-halved"></i>
@@ -285,8 +492,8 @@ HTML_LAYOUT = """
                 </div>
 
                 <div id="fleetSection" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h2 style="font-size: 1.3rem;">Top Selling Fleet Vehicles (December List)</h2>
-                    <span style="color: #64748b; font-size: 0.9rem;">Showing all 25 available models</span>
+                    <h2 style="font-size: 1.3rem;">Top Selling Fleet Vehicles</h2>
+                    <span style="color: #64748b; font-size: 0.9rem;">Showing all available models</span>
                 </div>
 
                 <div class="car-grid">
@@ -375,11 +582,10 @@ HTML_LAYOUT = """
                             <tr>
                                 <th>Booking ID</th>
                                 <th>Vehicle</th>
-                                <th>Starting Location</th>
-                                <th>Ending Location</th>
-                                <th>Rental Days</th>
+                                <th>Pickup / Drop</th>
+                                <th>Days & Cost</th>
                                 <th>Status</th>
-                                <th>Live Tracking</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -387,20 +593,37 @@ HTML_LAYOUT = """
                             <tr>
                                 <td><b>{{ b['id'] }}</b></td>
                                 <td>{{ b['vehicle'] }}</td>
-                                <td><i class="fa-solid fa-location-dot" style="color: #10b981;"></i> {{ b['start_location'] }}</td>
-                                <td><i class="fa-solid fa-flag-checkered" style="color: #ef4444;"></i> {{ b['end_location'] }}</td>
-                                <td>{{ b['days'] }} Days</td>
-                                <td><span style="background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Confirmed</span></td>
-                                <td><a href="/track/{{ b['clean_id'] }}" style="background: #2563eb; color: white; padding: 6px 12px; text-decoration: none; border-radius: 6px; font-size: 0.8rem; font-weight: 600;"><i class="fa-solid fa-satellite-dish"></i> Track Live</a></td>
+                                <td><small><i class="fa-solid fa-location-dot" style="color: #10b981;"></i> {{ b['start_location'] }}<br><i class="fa-solid fa-flag-checkered" style="color: #ef4444;"></i> {{ b['end_location'] }}</small></td>
+                                <td>{{ b['days'] }} Days<br><b>₹{{ b['total_cost'] }}</b></td>
+                                <td>
+                                    {% if b['status'] == 'Confirmed' %}
+                                        <span style="background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Confirmed</span>
+                                    {% elif b['status'] == 'Rejected' %}
+                                        <span style="background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Rejected</span>
+                                    {% elif b['status'] == 'Cancelled' %}
+                                        <span style="background: #f1f5f9; color: #64748b; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Cancelled</span>
+                                    {% else %}
+                                        <span style="background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Pending Approval</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div style="display: flex; gap: 6px;">
+                                        {% if b['status'] == 'Confirmed' %}
+                                            <a href="/track/{{ b['clean_id'] }}" style="background: #2563eb; color: white; padding: 5px 10px; text-decoration: none; border-radius: 6px; font-size: 0.78rem; font-weight: 600;"><i class="fa-solid fa-satellite-dish"></i> Track</a>
+                                        {% endif %}
+                                        {% if b['status'] != 'Cancelled' and b['status'] != 'Rejected' %}
+                                            <a href="/customer/cancel/{{ b['id'] }}" onclick="return confirm('Are you sure you want to cancel this booking?');" style="background: #ef4444; color: white; padding: 5px 10px; text-decoration: none; border-radius: 6px; font-size: 0.78rem; font-weight: 600;"><i class="fa-solid fa-ban"></i> Cancel</a>
+                                        {% endif %}
+                                    </div>
+                                </td>
                             </tr>
                             {% else %}
-                            <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 25px;">No active bookings found.</td></tr>
+                            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 25px;">No active bookings found.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Customer Breakdown Request Status and Admin Replies Section -->
                 <div class="table-card" style="margin-top: 20px;">
                     <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-headset" style="color: #ef4444;"></i> Breakdown Assistance Status & Admin Messages</h3>
                     <table>
@@ -480,7 +703,7 @@ HTML_LAYOUT = """
             {% elif page == 'breakdown_request' %}
                 <div class="form-box" style="max-width: 550px;">
                     <h2 style="margin-bottom: 8px;"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Vehicle Breakdown Assistance</h2>
-                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px;">Stranded or facing a mechanical problem? Send an instant emergency assistance request to support.</p>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px;">Stranded or facing a mechanical problem? Send an instant emergency assistance request.</p>
                     <form method="POST">
                         <div class="form-group">
                             <label>Select Your Booking / Vehicle</label>
@@ -504,11 +727,11 @@ HTML_LAYOUT = """
                         </div>
                         <div class="form-group">
                             <label>Current Breakdown Location / Landmark</label>
-                            <input type="text" name="breakdown_location" required placeholder="e.g., Near Bus Stand, Amalner / Highway NH-52">
+                            <input type="text" name="breakdown_location" required placeholder="e.g., Near Bus Stand, Amalner">
                         </div>
                         <div class="form-group">
-                            <label>Describe the Problem (Optional details)</label>
-                            <textarea name="description" rows="3" placeholder="Provide extra details for quick mechanic assistance..."></textarea>
+                            <label>Describe the Problem (Optional)</label>
+                            <textarea name="description" rows="3" placeholder="Provide extra details..."></textarea>
                         </div>
                         <button type="submit" class="btn-submit" style="background: #ef4444;"><i class="fa-solid fa-headset"></i> Request Emergency Assistance</button>
                     </form>
@@ -527,7 +750,7 @@ HTML_LAYOUT = """
                     <div class="stat-card">
                         <div class="stat-info">
                             <h4>Total Vehicles</h4>
-                            <div class="num">25</div>
+                            <div class="num">20</div>
                         </div>
                         <div class="stat-icon" style="background: #10b981;"><i class="fa-solid fa-car"></i></div>
                     </div>
@@ -549,9 +772,8 @@ HTML_LAYOUT = """
                     </div>
                 </div>
 
-                <!-- Admin Breakdown Management & Quick Reply Section -->
                 <div class="table-card">
-                    <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Vehicle Breakdown & Roadside Assistance Logs (Admin Control)</h3>
+                    <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Breakdown & Roadside Assistance Logs (Admin Control)</h3>
                     <table>
                         <thead>
                             <tr>
@@ -559,8 +781,8 @@ HTML_LAYOUT = """
                                 <th>Customer</th>
                                 <th>Vehicle</th>
                                 <th>Issue / Location</th>
-                                <th>Current Status / Reply</th>
-                                <th>Send Quick Admin Reply</th>
+                                <th>Current Status</th>
+                                <th>Send Quick Reply</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -581,48 +803,61 @@ HTML_LAYOUT = """
                                         <input type="hidden" name="breakdown_id" value="{{ br['id'] }}">
                                         <select name="reply_text" style="padding: 6px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #cbd5e1;" required>
                                             <option value="">-- Choose Quick Reply --</option>
-                                            <option value="Mechanic is dispatched to your location, please wait 15 mins. (आपकी गाड़ी को दुरुस्ती करने वाला बांदा निकल रहा है, कृपया 15 मिनट इंतजार कीजिए)">Mechanic dispatched, please wait 15 mins.</option>
-                                            <option value="We have received your alert. Backup vehicle is on the way. (हमें आपकी गाड़ी बंद होने की सूचना मिल गई है, दूसरी गाड़ी भेजी जा रही है)">Backup vehicle on the way.</option>
-                                            <option value="Please stay calm at your location. Roadside assistance team is calling you now. (कृपया अपनी लोकेशन पर सुरक्षित रहें, हमारी टीम आपको कॉल कर रही है)">Assistance team is calling you.</option>
+                                            <option value="Mechanic is dispatched to your location, please wait 15 mins.">Mechanic dispatched, please wait 15 mins.</option>
+                                            <option value="We have received your alert. Backup vehicle is on the way.">Backup vehicle on the way.</option>
+                                            <option value="Please stay calm at your location. Roadside assistance team is calling you now.">Assistance team is calling you.</option>
                                         </select>
                                         <button type="submit" style="background: #2563eb; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">Send Reply</button>
                                     </form>
                                 </td>
                             </tr>
                             {% else %}
-                            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 20px;">No breakdown assistance requests recorded. (All vehicles running smoothly)</td></tr>
+                            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 20px;">No breakdown assistance requests recorded.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
 
                 <div class="table-card">
-                    <h3 style="margin-bottom: 15px;">Recent Bookings & Live Fleet Monitoring</h3>
+                    <h3 style="margin-bottom: 15px;">Customer Bookings Approval Management</h3>
                     <table>
                         <thead>
                             <tr>
                                 <th>Booking ID</th>
                                 <th>Customer Name</th>
                                 <th>Vehicle</th>
-                                <th>Starting Location</th>
-                                <th>Ending Location</th>
+                                <th>Route / Days</th>
                                 <th>Status</th>
-                                <th>Live Track</th>
+                                <th>Admin Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for b in bookings %}
                             <tr>
                                 <td><b>{{ b['id'] }}</b></td>
-                                <td>{{ b['customer'] }}</td>
+                                <td>{{ b['customer'] }}<br><small>{{ b['phone'] }}</small></td>
                                 <td>{{ b['vehicle'] }}</td>
-                                <td>{{ b['start_location'] }}</td>
-                                <td>{{ b['end_location'] }}</td>
-                                <td><span style="background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 12px; font-weight: 600;">Confirmed</span></td>
-                                <td><a href="/track/{{ b['clean_id'] }}" style="background: #10b981; color: white; padding: 4px 10px; text-decoration: none; border-radius: 6px; font-size: 0.78rem; font-weight: 600;"><i class="fa-solid fa-map-location-dot"></i> Live GPS</a></td>
+                                <td>{{ b['start_location'] }} ➔ {{ b['end_location'] }}<br>({{ b['days'] }} Days | ₹{{ b['total_cost'] }})</td>
+                                <td>
+                                    {% if b['status'] == 'Confirmed' %}
+                                        <span style="background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 12px; font-weight: 600;">Confirmed</span>
+                                    {% elif b['status'] == 'Rejected' %}
+                                        <span style="background: #fee2e2; color: #991b1b; padding: 3px 8px; border-radius: 12px; font-weight: 600;">Rejected</span>
+                                    {% elif b['status'] == 'Cancelled' %}
+                                        <span style="background: #f1f5f9; color: #64748b; padding: 3px 8px; border-radius: 12px; font-weight: 600;">Cancelled</span>
+                                    {% else %}
+                                        <span style="background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 12px; font-weight: 600;">Pending Review</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div style="display: flex; gap: 6px;">
+                                        <a href="/admin/booking/action/{{ b['id'] }}/confirm" style="background: #10b981; color: white; padding: 5px 10px; text-decoration: none; border-radius: 6px; font-size: 0.78rem; font-weight: 600;">Confirm</a>
+                                        <a href="/admin/booking/action/{{ b['id'] }}/reject" style="background: #ef4444; color: white; padding: 5px 10px; text-decoration: none; border-radius: 6px; font-size: 0.78rem; font-weight: 600;">Reject</a>
+                                    </div>
+                                </td>
                             </tr>
                             {% else %}
-                            <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 20px;">No bookings recorded yet. (Zero Bookings)</td></tr>
+                            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 20px;">No bookings recorded yet.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -635,23 +870,23 @@ HTML_LAYOUT = """
                     <form method="POST">
                         <div class="form-group">
                             <label>Account Holder / Owner Name</label>
-                            <input type="text" name="account_name" required value="{{ bank_info['account_name'] }}" placeholder="Jayesh Bhavsar">
+                            <input type="text" name="account_name" required value="{{ bank_info['account_name'] }}">
                         </div>
                         <div class="form-group">
                             <label>Bank Name</label>
-                            <input type="text" name="bank_name" required value="{{ bank_info['bank_name'] }}" placeholder="State Bank of India">
+                            <input type="text" name="bank_name" required value="{{ bank_info['bank_name'] }}">
                         </div>
                         <div class="form-group">
                             <label>Account Number</label>
-                            <input type="text" name="account_number" required value="{{ bank_info['account_number'] }}" placeholder="Enter Bank Account Number">
+                            <input type="text" name="account_number" required value="{{ bank_info['account_number'] }}">
                         </div>
                         <div class="form-group">
                             <label>IFSC Code</label>
-                            <input type="text" name="ifsc_code" required value="{{ bank_info['ifsc_code'] }}" placeholder="SBIN000XXXX">
+                            <input type="text" name="ifsc_code" required value="{{ bank_info['ifsc_code'] }}">
                         </div>
                         <div class="form-group">
-                            <label>UPI ID (For Instant Payouts)</label>
-                            <input type="text" name="upi_id" required value="{{ bank_info['upi_id'] }}" placeholder="username@oksbi">
+                            <label>UPI ID</label>
+                            <input type="text" name="upi_id" required value="{{ bank_info['upi_id'] }}">
                         </div>
                         <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Save Withdrawal Details</button>
                     </form>
@@ -691,30 +926,28 @@ HTML_LAYOUT = """
                     <form method="POST">
                         <div class="form-group">
                             <label>Customer Name</label>
-                            <input type="text" name="customer_name" required value="{{ session.get('customer_user', {}).get('name', '') }}" placeholder="Rahul Patil">
+                            <input type="text" name="customer_name" required value="{{ session.get('customer_user', {}).get('name', '') }}">
                         </div>
                         <div class="form-group">
                             <label>Mobile Number</label>
-                            <input type="tel" name="phone" required value="{{ session.get('customer_user', {}).get('phone', '') }}" placeholder="10-digit number">
+                            <input type="tel" name="phone" required value="{{ session.get('customer_user', {}).get('phone', '') }}">
                         </div>
-                        
-                        <!-- Starting Location Input with Autocomplete Container -->
+
                         <div class="form-group" style="position: relative;">
                             <label><i class="fa-solid fa-location-dot" style="color: #10b981;"></i> Starting Location (Pickup)</label>
-                            <input type="text" id="start_location" name="start_location" autocomplete="off" required placeholder="Enter starting city, landmark or address...">
+                            <input type="text" id="start_location" name="start_location" autocomplete="off" required placeholder="Enter starting city, landmark...">
                             <div id="start_suggestions" class="suggestions-list" style="display: none;"></div>
                         </div>
 
-                        <!-- Ending Location Input with Autocomplete Container -->
                         <div class="form-group" style="position: relative;">
-                            <label><i class="fa-solid fa-flag-checkered" style="color: #ef4444;"></i> Ending Location (Drop-off / Destination)</label>
-                            <input type="text" id="end_location" name="end_location" autocomplete="off" required placeholder="Enter destination city, landmark or address...">
+                            <label><i class="fa-solid fa-flag-checkered" style="color: #ef4444;"></i> Ending Location (Drop-off)</label>
+                            <input type="text" id="end_location" name="end_location" autocomplete="off" required placeholder="Enter destination city, landmark...">
                             <div id="end_suggestions" class="suggestions-list" style="display: none;"></div>
                         </div>
 
                         <div class="form-group">
                             <label>Rental Start Date</label>
-                            <input type="date" name="start_date" required>
+                            <input type="date" name="start_date" min="{{ min_date }}" required>
                         </div>
                         <div class="form-group">
                             <label>Rental Days</label>
@@ -827,7 +1060,7 @@ HTML_LAYOUT = """
                 });
             } else {
                 btnV.classList.add('active');
-                btnP.classList.remove('active');
+                btnP.classList.remove('auth-active');
                 imgEl.style.display = 'none';
                 vidEl.style.display = 'block';
 
@@ -849,244 +1082,298 @@ HTML_LAYOUT = """
 </html>
 """
 
-@app.route('/')
-def home():
-    return render_template_string(HTML_LAYOUT, page='home', title='Top Selling Fleet Vehicles', cars=CARS, owner=OWNER_INFO)
+# --- Flask Routes ---
+@app.route("/")
+def landing_page():
+    return render_template_string(LANDING_TEMPLATE)
 
-@app.route('/customer/register', methods=['GET', 'POST'])
+@app.route("/home")
+def home():
+    return render_template_string(HTML_LAYOUT, page="home", title="Home & Fleet", owner=OWNER_INFO, cars=CARS)
+
+@app.route("/customer/register", methods=["GET", "POST"])
 def customer_register():
-    if request.method == 'POST':
-        email = request.form.get('email')
+    if session.get("admin_logged_in"):
+        flash("Please log out from Admin panel first.")
+        return redirect(url_for("admin_dashboard"))
+
+    if request.method == "POST":
+        name = request.form.get("name")
+        phone = request.form.get("phone")
+        license_num = request.form.get("license")
+        email = request.form.get("email")
+        password = request.form.get("password")
+
         if email in USERS_DB:
-            flash("Account with this email already exists! Please Login.")
-            return redirect(url_for('customer_login'))
+            flash("Email already registered. Please log in.")
+            return redirect(url_for("customer_login"))
 
         USERS_DB[email] = {
-            "name": request.form.get('name'),
-            "phone": request.form.get('phone'),
-            "license": request.form.get('license'),
+            "name": name,
+            "phone": phone,
+            "license": license_num,
             "email": email,
-            "password_hash": generate_password_hash(request.form.get('password'))
+            "password_hash": generate_password_hash(password)
         }
-        flash("Customer Account Created Successfully! Please Login.")
-        return redirect(url_for('customer_login'))
+        flash("Registration successful! Please sign in.")
+        return redirect(url_for("customer_login"))
 
-    return render_template_string(HTML_LAYOUT, page='customer_register', title='Customer Registration', owner=OWNER_INFO)
+    return render_template_string(HTML_LAYOUT, page="customer_register", title="Customer Registration", owner=OWNER_INFO)
 
-@app.route('/customer/login', methods=['GET', 'POST'])
+@app.route("/customer/login", methods=["GET", "POST"])
 def customer_login():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+    if session.get("admin_logged_in"):
+        flash("Please log out from Admin panel first.")
+        return redirect(url_for("admin_dashboard"))
+
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+
         user = USERS_DB.get(email)
-
         if user and check_password_hash(user['password_hash'], password):
-            session['customer_user'] = {"email": user['email'], "name": user['name'], "phone": user['phone']}
+            session["customer_user"] = {
+                "name": user["name"],
+                "email": user["email"],
+                "phone": user["phone"]
+            }
             flash(f"Welcome back, {user['name']}!")
-            return redirect(url_for('home'))
+            return redirect(url_for("home"))
         else:
-            flash("Invalid Customer Email or Password!")
+            flash("Invalid email or password.")
 
-    return render_template_string(HTML_LAYOUT, page='customer_login', title='Customer Login', owner=OWNER_INFO)
+    return render_template_string(HTML_LAYOUT, page="customer_login", title="Customer Sign In", owner=OWNER_INFO)
 
-@app.route('/customer/my-bookings')
+@app.route("/customer/logout")
+def customer_logout():
+    session.pop("customer_user", None)
+    flash("You have been logged out.")
+    return redirect(url_for("landing_page"))
+
+@app.route("/customer/my-bookings")
 def my_bookings():
-    if not session.get('customer_user'):
-        flash("Please login to view your bookings!")
-        return redirect(url_for('customer_login'))
+    if not session.get("customer_user"):
+        flash("Please log in to view your bookings.")
+        return redirect(url_for("customer_login"))
 
-    user_email = session['customer_user']['email']
-    user_b = []
+    current_email = session["customer_user"]["email"]
+    user_bookings = [b for b in BOOKINGS if b.get("customer_email") == current_email]
+    user_breakdowns = [br for br in BREAKDOWN_REQUESTS if br.get("customer_email") == current_email]
+
+    return render_template_string(HTML_LAYOUT, page="my_bookings", title="My Bookings & Assistance", owner=OWNER_INFO, my_bookings=user_bookings, my_breakdowns=user_breakdowns)
+
+@app.route("/customer/cancel/<booking_id>")
+def cancel_booking(booking_id):
+    if not session.get("customer_user"):
+        flash("Please log in.")
+        return redirect(url_for("customer_login"))
+
     for b in BOOKINGS:
-        if b.get('customer_email') == user_email:
-            b_copy = b.copy()
-            b_copy['clean_id'] = b['id'].replace('#', '')
-            user_b.append(b_copy)
-            
-    user_br = [br for br in BREAKDOWN_REQUESTS if br.get('customer_phone') == session['customer_user']['phone'] or br.get('customer_name') == session['customer_user']['name']]
-    
-    return render_template_string(HTML_LAYOUT, page='my_bookings', title='My Bookings', my_bookings=user_b, my_breakdowns=user_br, owner=OWNER_INFO)
+        if b["id"] == booking_id and b["customer_email"] == session["customer_user"]["email"]:
+            b["status"] = "Cancelled"
+            flash(f"Booking {booking_id} has been cancelled successfully.")
+            break
+    return redirect(url_for("my_bookings"))
 
-@app.route('/track/<path:booking_id>')
-def track_booking(booking_id):
-    search_id = booking_id if booking_id.startswith('#') else f"#{booking_id}"
-    booking = next((b for b in BOOKINGS if b['id'] == search_id or b['id'] == booking_id), None)
+@app.route("/book/<int:car_id>", methods=["GET", "POST"])
+def book_car(car_id):
+    if not session.get("customer_user"):
+        flash("Please log in or register before booking a vehicle.")
+        return redirect(url_for("customer_login"))
+
+    car = next((c for c in CARS if c["id"] == car_id), None)
+    if not car:
+        flash("Vehicle not found.")
+        return redirect(url_for("home"))
+
+    current_date = datetime.now().strftime('%Y-%m-%d')
+
+    if request.method == "POST":
+        customer_name = request.form.get("customer_name")
+        phone = request.form.get("phone")
+        start_location = request.form.get("start_location")
+        end_location = request.form.get("end_location")
+        start_date = request.form.get("start_date")
+        days = int(request.form.get("days", 1))
+
+        if start_date < current_date:
+            flash("Past dates cannot be selected for rental booking.")
+            return redirect(url_for("book_car", car_id=car_id))
+
+        booking_id = f"BK-{len(BOOKINGS) + 1001}"
+        clean_id = f"CLN-{len(BOOKINGS) + 1001}"
+        total_cost = days * car["price"]
+
+        customer_email = session.get("customer_user", {}).get("email")
+
+        booking_data = {
+            "id": booking_id,
+            "clean_id": clean_id,
+            "customer": customer_name,
+            "customer_email": customer_email,
+            "phone": phone,
+            "vehicle": car["name"],
+            "start_location": start_location,
+            "end_location": end_location,
+            "start_date": start_date,
+            "days": days,
+            "total_cost": total_cost,
+            "status": "Pending Review"
+        }
+        BOOKINGS.append(booking_data)
+
+        whatsapp_text = f"Hello, I have booked a {car['name']} (ID: {booking_id}) from {start_location} to {end_location} for {days} days. Total: ₹{total_cost}."
+        session["last_booking_msg"] = whatsapp_text
+
+        flash(f"Booking {booking_id} submitted for admin review! Total Amount: ₹{total_cost}")
+        return redirect(url_for("home"))
+
+    return render_template_string(HTML_LAYOUT, page="book", title=f"Book {car['name']}", owner=OWNER_INFO, car=car, min_date=current_date)
+
+@app.route("/track/<clean_id>")
+def track_booking(clean_id):
+    booking = next((b for b in BOOKINGS if b["clean_id"] == clean_id), None)
     if not booking:
-        flash("Booking not found!")
-        return redirect(url_for('home'))
-    return render_template_string(HTML_LAYOUT, page='track_booking', title='Live Vehicle GPS Tracking', booking=booking, owner=OWNER_INFO)
+        flash("Booking tracking reference not found.")
+        return redirect(url_for("home"))
 
-@app.route('/customer/breakdown', methods=['GET', 'POST'])
-def customer_breakdown():
-    if not session.get('customer_user'):
-        flash("Please login to request breakdown assistance!")
-        return redirect(url_for('customer_login'))
+    return render_template_string(HTML_LAYOUT, page="track_booking", title="Live Vehicle Tracking", owner=OWNER_INFO, booking=booking)
 
-    user_email = session['customer_user']['email']
-    user_b = [b for b in BOOKINGS if b.get('customer_email') == user_email]
+@app.route("/customer/breakdown", methods=["GET", "POST"])
+def breakdown_request():
+    if not session.get("customer_user"):
+        flash("Please log in to request breakdown assistance.")
+        return redirect(url_for("customer_login"))
 
-    if request.method == 'POST':
-        booking_id = request.form.get('booking_id')
-        issue_type = request.form.get('issue_type')
-        location = request.form.get('breakdown_location')
-        description = request.form.get('description', '')
+    current_email = session["customer_user"]["email"]
+    user_bookings = [b for b in BOOKINGS if b.get("customer_email") == current_email]
 
-        selected_booking = next((b for b in BOOKINGS if b['id'] == booking_id), None)
-        vehicle_name = selected_booking['vehicle'] if selected_booking else 'Unknown Vehicle'
-        customer_name = session['customer_user']['name']
-        customer_phone = session['customer_user']['phone']
+    if request.method == "POST":
+        booking_id = request.form.get("booking_id")
+        issue_type = request.form.get("issue_type")
+        location = request.form.get("breakdown_location")
+        description = request.form.get("description", "")
 
-        br_id = f"#BR{1000 + len(BREAKDOWN_REQUESTS) + 1}"
-        BREAKDOWN_REQUESTS.append({
-            "id": br_id,
+        selected_booking = next((b for b in BOOKINGS if b["id"] == booking_id), None)
+        vehicle_name = selected_booking["vehicle"] if selected_booking else "Unknown Vehicle"
+
+        req_id = f"BRK-{len(BREAKDOWN_REQUESTS) + 501}"
+        breakdown_obj = {
+            "id": req_id,
             "booking_id": booking_id,
-            "customer_name": customer_name,
-            "customer_phone": customer_phone,
+            "customer_name": session["customer_user"]["name"],
+            "customer_email": current_email,
+            "customer_phone": session["customer_user"]["phone"],
             "vehicle": vehicle_name,
             "issue": issue_type,
             "location": location,
             "description": description,
             "status": "Pending Dispatch",
             "admin_reply": ""
-        })
-
-        wa_msg = f"🚨 EMERGENCY ROADWAY ASSISTANCE!\nReq ID: {br_id}\nBooking: {booking_id}\nVehicle: {vehicle_name}\nCustomer: {customer_name} ({customer_phone})\nIssue: {issue_type}\nLocation: {location}\nDesc: {description}"
-        session['last_breakdown_msg'] = wa_msg
-        flash("Breakdown SOS request registered successfully! Support team alerted.")
-        return redirect(url_for('my_bookings'))
-
-    return render_template_string(HTML_LAYOUT, page='breakdown_request', title='Vehicle Breakdown Assistance', my_bookings=user_b, owner=OWNER_INFO)
-
-@app.route('/admin/breakdown/reply', methods=['POST'])
-def admin_breakdown_reply():
-    if not session.get('admin_logged_in'):
-        flash("Please login as admin!")
-        return redirect(url_for('admin_login'))
-    
-    br_id = request.form.get('breakdown_id')
-    reply_text = request.form.get('reply_text')
-    
-    for br in BREAKDOWN_REQUESTS:
-        if br['id'] == br_id:
-            br['admin_reply'] = reply_text
-            br['status'] = "Assistance Dispatched"
-            break
-            
-    flash(f"Reply sent successfully for request {br_id}!")
-    return redirect(url_for('admin_dashboard'))
-
-@app.route('/customer/logout')
-def customer_logout():
-    session.pop('customer_user', None)
-    flash("Customer Logged Out Successfully!")
-    return redirect(url_for('home'))
-
-@app.route('/admin/login', methods=['GET', 'POST'])
-def admin_login():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        if email == ADMIN_USER['email'] and check_password_hash(ADMIN_USER['password_hash'], password):
-            session['admin_logged_in'] = ADMIN_USER['email']
-            return redirect(url_for('admin_dashboard'))
-        else:
-            flash("Invalid Admin Email or Password!")
-    return render_template_string(HTML_LAYOUT, page='login', title='Admin Login', owner=OWNER_INFO)
-
-@app.route('/admin/dashboard')
-def admin_dashboard():
-    if not session.get('admin_logged_in'):
-        flash("Please login to access Admin Dashboard!")
-        return redirect(url_for('admin_login'))
-
-    total_rev = sum(b['amount'] for b in BOOKINGS)
-    
-    admin_bookings = []
-    for b in BOOKINGS:
-        b_copy = b.copy()
-        b_copy['clean_id'] = b['id'].replace('#', '')
-        admin_bookings.append(b_copy)
-
-    return render_template_string(
-        HTML_LAYOUT,
-        page='dashboard',
-        title='Admin Dashboard',
-        bookings=admin_bookings,
-        breakdowns=BREAKDOWN_REQUESTS,
-        total_bookings=len(BOOKINGS),
-        total_customers=len(USERS_DB),
-        total_breakdowns=len(BREAKDOWN_REQUESTS),
-        total_revenue=total_rev,
-        owner=OWNER_INFO
-    )
-
-@app.route('/admin/bank-payments', methods=['GET', 'POST'])
-def admin_bank_payments():
-    global ADMIN_BANK_INFO
-    if not session.get('admin_logged_in'):
-        flash("Please login to access Bank & Payments settings!")
-        return redirect(url_for('admin_login'))
-
-    if request.method == 'POST':
-        ADMIN_BANK_INFO = {
-            "account_name": request.form.get('account_name'),
-            "bank_name": request.form.get('bank_name'),
-            "account_number": request.form.get('account_number'),
-            "ifsc_code": request.form.get('ifsc_code'),
-            "upi_id": request.form.get('upi_id')
         }
-        flash("Owner Bank and Withdrawal details updated successfully!")
-        return redirect(url_for('admin_bank_payments'))
+        BREAKDOWN_REQUESTS.append(breakdown_obj)
 
-    return render_template_string(
-        HTML_LAYOUT,
-        page='admin_bank',
-        title='Admin Bank & Payments',
-        bank_info=ADMIN_BANK_INFO,
-        owner=OWNER_INFO
-    )
+        sos_msg = f"EMERGENCY SOS: Breakdown for {vehicle_name} (Booking {booking_id}). Issue: {issue_type} at {location}."
+        session["last_breakdown_msg"] = sos_msg
 
-@app.route('/contact')
-def contact():
-    return render_template_string(HTML_LAYOUT, page='contact', title='Contact Details', owner=OWNER_INFO)
+        flash("Emergency assistance request sent to admin successfully!")
+        return redirect(url_for("my_bookings"))
 
-@app.route('/book/<int:car_id>', methods=['GET', 'POST'])
-def book_car(car_id):
-    car = next((c for c in CARS if c['id'] == car_id), None)
-    if request.method == 'POST':
-        c_name = request.form.get('customer_name')
-        c_phone = request.form.get('phone')
-        start_location = request.form.get('start_location')
-        end_location = request.form.get('end_location')
-        days = int(request.form.get('days', 1))
-        amount = days * car['price']
+    return render_template_string(HTML_LAYOUT, page="breakdown_request", title="Roadside Breakdown Support", owner=OWNER_INFO, my_bookings=user_bookings)
 
-        b_id = f"#BK{1000 + len(BOOKINGS) + 1}"
-        c_email = session.get('customer_user', {}).get('email', 'guest')
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    if session.get("customer_user"):
+        flash("Please log out from Customer account first.")
+        return redirect(url_for("home"))
 
-        BOOKINGS.append({
-            "id": b_id,
-            "customer": c_name,
-            "customer_email": c_email,
-            "vehicle": car['name'],
-            "start_location": start_location,
-            "end_location": end_location,
-            "days": days,
-            "amount": amount
-        })
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
 
-        wa_msg = f"New Ride Booking!\nID: {b_id}\nVehicle: {car['name']}\nCustomer: {c_name}\nPhone: {c_phone}\nStart Location: {start_location}\nEnd Location: {end_location}\nTotal: ₹{amount}"
-        session['last_booking_msg'] = wa_msg
-        flash(f"Booking confirmed for {car['name']}! Total: ₹{amount}")
-        return redirect(url_for('home'))
+        if email == ADMIN_USER["email"] and check_password_hash(ADMIN_USER["password_hash"], password):
+            session["admin_logged_in"] = True
+            flash("Logged in as Administrator.")
+            return redirect(url_for("admin_dashboard"))
+        else:
+            flash("Invalid admin credentials.")
 
-    return render_template_string(HTML_LAYOUT, page='book', title='Book Vehicle', car=car, owner=OWNER_INFO)
+    return render_template_string(HTML_LAYOUT, page="login", title="Admin Login", owner=OWNER_INFO)
 
-@app.route('/admin/logout')
+@app.route("/admin/logout")
 def admin_logout():
-    session.pop('admin_logged_in', None)
-    flash("Admin Logged Out Successfully!")
-    return redirect(url_for('home'))
+    session.pop("admin_logged_in", None)
+    flash("Admin logged out successfully.")
+    return redirect(url_for("landing_page"))
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route("/admin/dashboard")
+def admin_dashboard():
+    if not session.get("admin_logged_in"):
+        flash("Admin access required.")
+        return redirect(url_for("admin_login"))
+
+    total_revenue = sum(b.get("total_cost", 0) for b in BOOKINGS if b.get("status") == "Confirmed")
+
+    return render_template_string(HTML_LAYOUT, page="dashboard", title="Admin Control Dashboard", owner=OWNER_INFO, bookings=BOOKINGS, breakdowns=BREAKDOWN_REQUESTS, total_bookings=len(BOOKINGS), total_breakdowns=len(BREAKDOWN_REQUESTS), total_revenue=total_revenue)
+
+@app.route("/admin/booking/action/<booking_id>/<action>")
+def admin_booking_action(booking_id, action):
+    if not session.get("admin_logged_in"):
+        flash("Admin access required.")
+        return redirect(url_for("admin_login"))
+
+    for b in BOOKINGS:
+        if b["id"] == booking_id:
+            if action == "confirm":
+                b["status"] = "Confirmed"
+                flash(f"Booking {booking_id} has been Confirmed.")
+            elif action == "reject":
+                b["status"] = "Rejected"
+                flash(f"Booking {booking_id} has been Rejected.")
+            break
+    return redirect(url_for("admin_dashboard"))
+
+@app.route("/admin/breakdown/reply", methods=["POST"])
+def admin_breakdown_reply():
+    if not session.get("admin_logged_in"):
+        flash("Admin access required.")
+        return redirect(url_for("admin_login"))
+
+    breakdown_id = request.form.get("breakdown_id")
+    reply_text = request.form.get("reply_text")
+
+    for br in BREAKDOWN_REQUESTS:
+        if br["id"] == breakdown_id:
+            br["admin_reply"] = reply_text
+            br["status"] = "Mechanic Dispatched"
+            flash(f"Reply sent for breakdown request {breakdown_id}.")
+            break
+
+    return redirect(url_for("admin_dashboard"))
+
+@app.route("/admin/bank-payments", methods=["GET", "POST"])
+def admin_bank():
+    global ADMIN_BANK_INFO
+    if not session.get("admin_logged_in"):
+        flash("Admin access required.")
+        return redirect(url_for("admin_login"))
+
+    if request.method == "POST":
+        ADMIN_BANK_INFO = {
+            "account_name": request.form.get("account_name"),
+            "bank_name": request.form.get("bank_name"),
+            "account_number": request.form.get("account_number"),
+            "ifsc_code": request.form.get("ifsc_code"),
+            "upi_id": request.form.get("upi_id"),
+        }
+        flash("Bank and withdrawal information updated successfully!")
+        return redirect(url_for("admin_bank"))
+
+    return render_template_string(HTML_LAYOUT, page="admin_bank", title="Bank & Payment Settings", owner=OWNER_INFO, bank_info=ADMIN_BANK_INFO)
+
+@app.route("/contact")
+def contact():
+    return render_template_string(HTML_LAYOUT, page="contact", title="Contact Us", owner=OWNER_INFO)
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
