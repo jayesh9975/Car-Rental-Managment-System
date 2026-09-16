@@ -1,4 +1,5 @@
 import os
+import requests
 from flask import Flask, render_template_string, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -1295,6 +1296,21 @@ def book_car(car_id):
             "status": "Pending Review"
         }
         BOOKINGS.append(booking_data)
+
+        # --- TEXT SMS AUTOMATIC SENDING CODE ---
+        try:
+            url = "https://www.fast2sms.com/dev/bulkV2"
+            querystring = {
+                "authorization": "YOUR_FAST2SMS_API_KEY", # <--- IThe tumchi fast2smschi API key taka
+                "message": f"Hello {customer_name}, Your Booking ID {booking_id} for {car['name']} is confirmed! Total: Rs.{total_cost}.",
+                "language": "english",
+                "route": "q",
+                "numbers": phone
+            }
+            headers = {'cache-control': "no-cache"}
+            requests.request("GET", url, headers=headers, params=querystring)
+        except Exception as e:
+            print("SMS sending failed:", e)
 
         whatsapp_text = f"Hello, I have booked a {car['name']} (ID: {booking_id}) from {start_location} to {end_location} for {days} days. Total: ₹{total_cost}."
         session["last_booking_msg"] = whatsapp_text
