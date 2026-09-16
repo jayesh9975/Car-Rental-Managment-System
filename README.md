@@ -1043,15 +1043,16 @@ HTML_LAYOUT = """
                             <input type="number" name="days" value="1" min="1" max="30" required>
                         </div>
 
-                        <!-- Payment & QR Code Section placed strictly at the bottom before confirmation -->
+                        <!-- Direct UPI Payment QR Code (PhonePe / GPay / PayTM Supported) -->
                         <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
-                            <h4 style="font-size: 1rem; color: #0f172a; margin-bottom: 6px;"><i class="fa-solid fa-qrcode" style="color: #2563eb;"></i> Step 2: Scan QR & Pay</h4>
-                            <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 12px;">Scan via PhonePe / GPay to pay <b>Jayesh Harish Bhavsar</b></p>
+                            <h4 style="font-size: 1rem; color: #0f172a; margin-bottom: 6px;"><i class="fa-solid fa-qrcode" style="color: #2563eb;"></i> Step 2: Scan QR to Pay via PhonePe / GPay</h4>
+                            <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 12px;">Scan this QR code from any UPI app to pay <b>JAYESH HARISH BHAVSAR</b></p>
                             
-                            <div style="background: white; display: inline-block; padding: 12px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 12px;">
-                                <img src="{{ url_for('static', filename='qr_code.jpg') }}" alt="PhonePe QR" style="width: 170px; height: 170px; object-fit: contain; display: block; margin: 0 auto;">
+                            <div style="background: white; display: inline-block; padding: 12px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 8px;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=jayeshbhavsar@oksbi&pn=Jayesh%20Harish%20Bhavsar&cu=INR" alt="UPI QR Code" style="width: 170px; height: 170px; object-fit: contain; display: block; margin: 0 auto;">
                             </div>
-                            <p style="font-size: 0.82rem; font-weight: 700; color: #1e293b;">JAYESH HARISH BHAVSAR</p>
+                            <p style="font-size: 0.82rem; font-weight: 700; color: #1e293b; margin-top: 4px;">UPI ID: jayeshbhavsar@oksbi</p>
+                            <p style="font-size: 0.78rem; font-weight: 600; color: #2563eb;">Name: JAYESH HARISH BHAVSAR</p>
                         </div>
 
                         <div class="form-group" style="background: #eff6ff; padding: 15px; border-radius: 8px; border: 1.5px solid #bfdbfe; margin-bottom: 20px;">
@@ -1429,7 +1430,7 @@ def admin_dashboard():
         flash("Admin access required.")
         return redirect(url_for("admin_login"))
 
-    total_revenue = sum(b.get("total_cost", 0) for b in BOOKINGS if b.get("status") == "Confirmed")
+    total_revenue = sum(b.get("total_cost", 0) for b in BOOKINGS if b.get("status"] == "Confirmed")
 
     return render_template_string(HTML_LAYOUT, page="dashboard", title="Admin Control Dashboard", owner=OWNER_INFO, bookings=BOOKINGS, breakdowns=BREAKDOWN_REQUESTS, total_bookings=len(BOOKINGS), total_breakdowns=len(BREAKDOWN_REQUESTS), total_revenue=total_revenue)
 
@@ -1468,7 +1469,7 @@ def admin_breakdown_reply():
 
     return redirect(url_for("admin_dashboard"))
 
-@app.route("/admin/bank-payments",, methods=["GET", "POST"])
+@app.route("/admin/bank-payments", methods=["GET", "POST"])
 def admin_bank():
     global ADMIN_BANK_INFO
     if not session.get("admin_logged_in"):
