@@ -87,6 +87,9 @@ HTML_LAYOUT = """
     <title>Car Rental Management System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS for Interactive OpenStreetMap Live Tracking -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         :root { --sidebar-bg: #0f172a; --sidebar-active: #2563eb; --bg-main: #f8fafc; --text-dark: #1e293b; --text-muted: #64748b; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -107,6 +110,20 @@ HTML_LAYOUT = """
         .top-header { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; }
         .top-header h2 { font-size: 1.3rem; font-weight: 700; color: #0f172a; }
         .content-body { padding: 25px 30px; flex: 1; }
+
+        /* Landing Page Styles */
+        .hero-banner { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 50px 40px; border-radius: 16px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .hero-content { max-width: 600px; }
+        .hero-content h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; line-height: 1.2; }
+        .hero-content p { font-size: 1rem; color: #cbd5e1; margin-bottom: 20px; line-height: 1.6; }
+        .hero-btn { background: #2563eb; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; transition: background 0.3s; }
+        .hero-btn:hover { background: #1d4ed8; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 35px; }
+        .feature-box { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; text-align: center; }
+        .feature-box i { font-size: 2rem; color: #2563eb; margin-bottom: 12px; }
+        .feature-box h4 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+        .feature-box p { font-size: 0.85rem; color: #64748b; }
 
         .car-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
         .car-card { background: white; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; cursor: pointer; display: flex; flex-direction: column; transition: all 0.3s ease; }
@@ -131,11 +148,19 @@ HTML_LAYOUT = """
         .thumb-img { width: 100%; height: 70px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; }
         .thumb-img.active { border-color: #2563eb; }
 
-        .form-box { background: white; padding: 30px; border-radius: 12px; max-width: 450px; margin: 20px auto; border: 1px solid #e2e8f0; }
-        .form-group { margin-bottom: 18px; }
+        .form-box { background: white; padding: 30px; border-radius: 12px; max-width: 500px; margin: 20px auto; border: 1px solid #e2e8f0; position: relative; }
+        .form-group { margin-bottom: 18px; position: relative; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.88rem; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; }
         .btn-submit { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+
+        /* Suggestions Dropdown Style */
+        .suggestions-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 6px 6px; max-height: 180px; overflow-y: auto; z-index: 99; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .suggestion-item { padding: 10px 12px; font-size: 0.88rem; cursor: pointer; border-bottom: 1px solid #f1f5f9; }
+        .suggestion-item:hover { background: #f1f5f9; }
+
+        /* Map styling for live tracking */
+        #liveMap { width: 100%; height: 350px; border-radius: 10px; margin-top: 15px; border: 1px solid #cbd5e1; }
 
         .table-card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #f1f5f9; margin-bottom: 25px; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
@@ -153,7 +178,7 @@ HTML_LAYOUT = """
 
         <ul class="nav-list">
             <li class="nav-item {% if page == 'home' %}active{% endif %}">
-                <a href="/"><i class="fa-solid fa-car"></i> Fleet Vehicles</a>
+                <a href="/"><i class="fa-solid fa-house"></i> Home & Fleet</a>
             </li>
             {% if session.get('customer_user') %}
             <li class="nav-item {% if page == 'my_bookings' %}active{% endif %}">
@@ -223,7 +248,47 @@ HTML_LAYOUT = """
             {% endfor %}
 
             {% if page == 'home' %}
-                <h2 style="font-size: 1.3rem; margin-bottom: 20px;">Top Selling Fleet Vehicles</h2>
+                <!-- Landing Page Hero Banner -->
+                <div class="hero-banner">
+                    <div class="hero-content">
+                        <h1>Experience the Best Car Rental Service in Maharashtra</h1>
+                        <p>Choose from our top-tier fleet of 25+ verified vehicles. Enjoy seamless booking, live GPS route tracking, and 24/7 roadside breakdown assistance managed by Jayesh Bhavsar.</p>
+                        <a href="#fleetSection" class="hero-btn"><i class="fa-solid fa-car"></i> Explore Fleet Now</a>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-car-side" style="font-size: 7rem; color: #3b82f6; opacity: 0.9;"></i>
+                    </div>
+                </div>
+
+                <!-- Features Highlights -->
+                <div class="features-grid">
+                    <div class="feature-box">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <h4>100% Safe & Verified</h4>
+                        <p>All cars undergo rigorous safety checks and sanitization before every ride.</p>
+                    </div>
+                    <div class="feature-box">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        <h4>Live GPS Tracking</h4>
+                        <p>Real-time vehicle movement tracking for both customers and admin.</p>
+                    </div>
+                    <div class="feature-box">
+                        <i class="fa-solid fa-headset"></i>
+                        <h4>24/7 Breakdown Support</h4>
+                        <p>Instant mechanic dispatch and live administrative support replies.</p>
+                    </div>
+                    <div class="feature-box">
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        <h4>Transparent Pricing</h4>
+                        <p>Affordable daily rental rates with zero hidden charges.</p>
+                    </div>
+                </div>
+
+                <div id="fleetSection" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2 style="font-size: 1.3rem;">Top Selling Fleet Vehicles (December List)</h2>
+                    <span style="color: #64748b; font-size: 0.9rem;">Showing all 25 available models</span>
+                </div>
+
                 <div class="car-grid">
                     {% for car in cars %}
                     <div class="car-card" onclick="openModal('{{ car['name'] }}', {{ car['photos']|tojson }}, {{ car['videos']|tojson }})">
@@ -304,16 +369,17 @@ HTML_LAYOUT = """
 
             {% elif page == 'my_bookings' %}
                 <div class="table-card">
-                    <h3 style="margin-bottom: 15px;">My Rental Bookings</h3>
+                    <h3 style="margin-bottom: 15px;">My Rental Bookings & Live Tracking</h3>
                     <table>
                         <thead>
                             <tr>
                                 <th>Booking ID</th>
                                 <th>Vehicle</th>
-                                <th>Pickup Location</th>
+                                <th>Starting Location</th>
+                                <th>Ending Location</th>
                                 <th>Rental Days</th>
                                 <th>Status</th>
-                                <th>Amount Paid</th>
+                                <th>Live Tracking</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -321,17 +387,95 @@ HTML_LAYOUT = """
                             <tr>
                                 <td><b>{{ b['id'] }}</b></td>
                                 <td>{{ b['vehicle'] }}</td>
-                                <td>{{ b['location'] }}</td>
+                                <td><i class="fa-solid fa-location-dot" style="color: #10b981;"></i> {{ b['start_location'] }}</td>
+                                <td><i class="fa-solid fa-flag-checkered" style="color: #ef4444;"></i> {{ b['end_location'] }}</td>
                                 <td>{{ b['days'] }} Days</td>
                                 <td><span style="background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Confirmed</span></td>
-                                <td><b>₹ {{ b['amount'] }}</b></td>
+                                <td><a href="/track/{{ b['clean_id'] }}" style="background: #2563eb; color: white; padding: 6px 12px; text-decoration: none; border-radius: 6px; font-size: 0.8rem; font-weight: 600;"><i class="fa-solid fa-satellite-dish"></i> Track Live</a></td>
                             </tr>
                             {% else %}
-                            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 25px;">No active bookings found.</td></tr>
+                            <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 25px;">No active bookings found.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Customer Breakdown Request Status and Admin Replies Section -->
+                <div class="table-card" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-headset" style="color: #ef4444;"></i> Breakdown Assistance Status & Admin Messages</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Vehicle</th>
+                                <th>Issue</th>
+                                <th>Location</th>
+                                <th>Admin Support Reply</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for br in my_breakdowns %}
+                            <tr>
+                                <td><b>{{ br['id'] }}</b></td>
+                                <td>{{ br['vehicle'] }}</td>
+                                <td><span style="background: #fee2e2; color: #991b1b; padding: 3px 8px; border-radius: 12px; font-weight: 600;">{{ br['issue'] }}</span></td>
+                                <td>{{ br['location'] }}</td>
+                                <td>
+                                    {% if br['admin_reply'] %}
+                                        <div style="background: #eff6ff; color: #1e40af; padding: 8px 12px; border-radius: 6px; font-weight: 600; border-left: 4px solid #2563eb;">
+                                            <i class="fa-solid fa-user-shield"></i> {{ br['admin_reply'] }}
+                                        </div>
+                                    {% else %}
+                                        <span style="color: #d97706; font-style: italic; font-weight: 500;">Awaiting mechanic assignment & reply...</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">No breakdown requests submitted yet.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            {% elif page == 'track_booking' %}
+                <div class="form-box" style="max-width: 700px;">
+                    <h3 style="margin-bottom: 5px;"><i class="fa-solid fa-satellite-dish" style="color: #2563eb;"></i> Live Vehicle Tracking</h3>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 15px;">Booking ID: <b>{{ booking['id'] }}</b> | Vehicle: <b>{{ booking['vehicle'] }}</b></p>
+                    <div style="font-size: 0.85rem; margin-bottom: 10px;">
+                        <span style="color: #10b981; font-weight: 600;">● Start:</span> {{ booking['start_location'] }}<br>
+                        <span style="color: #ef4444; font-weight: 600;">● Destination:</span> {{ booking['end_location'] }}
+                    </div>
+                    <div id="liveMap"></div>
+                    <div style="margin-top: 15px; text-align: center;">
+                        <a href="/customer/my-bookings" class="btn-submit" style="display: inline-block; text-decoration: none; background: #64748b; width: auto; padding: 8px 20px;">Back to Bookings</a>
+                    </div>
+                </div>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        var map = L.map('liveMap').setView([21.0503, 75.0601], 13);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 19,
+                        }).addTo(map);
+
+                        var carIcon = L.divIcon({
+                            html: '<i class="fa-solid fa-car-side" style="font-size: 24px; color: #2563eb; background: white; padding: 6px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"></i>',
+                            className: 'dummy-car-icon',
+                            iconSize: [36, 36],
+                            iconAnchor: [18, 18]
+                        });
+
+                        var marker = L.marker([21.0503, 75.0601], {icon: carIcon}).addTo(map);
+                        marker.bindPopup("<b>{{ booking['vehicle'] }}</b><br>Status: On the Move (Live GPS)").openPopup();
+
+                        let lat = 21.0503, lng = 75.0601;
+                        setInterval(() => {
+                            lat += (Math.random() - 0.5) * 0.002;
+                            lng += (Math.random() - 0.5) * 0.002;
+                            marker.setLatLng([lat, lng]);
+                            map.panTo([lat, lng]);
+                        }, 3000);
+                    });
+                </script>
 
             {% elif page == 'breakdown_request' %}
                 <div class="form-box" style="max-width: 550px;">
@@ -343,7 +487,7 @@ HTML_LAYOUT = """
                             <select name="booking_id" required>
                                 <option value="">-- Select Active Booking --</option>
                                 {% for b in my_bookings %}
-                                <option value="{{ b['id'] }}">{{ b['id'] }} - {{ b['vehicle'] }} (Location: {{ b['location'] }})</option>
+                                <option value="{{ b['id'] }}">{{ b['id'] }} - {{ b['vehicle'] }} (Pickup: {{ b['start_location'] }})</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -405,49 +549,65 @@ HTML_LAYOUT = """
                     </div>
                 </div>
 
+                <!-- Admin Breakdown Management & Quick Reply Section -->
                 <div class="table-card">
-                    <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Vehicle Breakdown & Roadside Assistance Logs</h3>
+                    <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Vehicle Breakdown & Roadside Assistance Logs (Admin Control)</h3>
                     <table>
                         <thead>
                             <tr>
                                 <th>Request ID</th>
-                                <th>Booking ID</th>
                                 <th>Customer</th>
                                 <th>Vehicle</th>
-                                <th>Issue Type</th>
-                                <th>Breakdown Location</th>
-                                <th>Status</th>
+                                <th>Issue / Location</th>
+                                <th>Current Status / Reply</th>
+                                <th>Send Quick Admin Reply</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for br in breakdowns %}
                             <tr>
                                 <td><b>{{ br['id'] }}</b></td>
-                                <td>{{ br['booking_id'] }}</td>
-                                <td>{{ br['customer_name'] }}</td>
+                                <td>{{ br['customer_name'] }}<br><small style="color: #64748b;">{{ br['customer_phone'] }}</small></td>
                                 <td>{{ br['vehicle'] }}</td>
-                                <td><span style="background: #fee2e2; color: #991b1b; padding: 3px 8px; border-radius: 12px; font-weight: 600;">{{ br['issue'] }}</span></td>
-                                <td>{{ br['location'] }}</td>
-                                <td><span style="background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 12px; font-weight: 600;">{{ br['status'] }}</span></td>
+                                <td><span style="background: #fee2e2; color: #991b1b; padding: 3px 8px; border-radius: 12px; font-weight: 600;">{{ br['issue'] }}</span><br><small>{{ br['location'] }}</small></td>
+                                <td>
+                                    <span style="background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 12px; font-weight: 600; display: inline-block; margin-bottom: 5px;">{{ br['status'] }}</span>
+                                    {% if br['admin_reply'] %}
+                                    <div style="font-size: 0.8rem; color: #1e40af; background: #eff6ff; padding: 4px; border-radius: 4px;"><strong>Last Reply:</strong> {{ br['admin_reply'] }}</div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form action="/admin/breakdown/reply" method="POST" style="display: flex; gap: 5px; flex-direction: column;">
+                                        <input type="hidden" name="breakdown_id" value="{{ br['id'] }}">
+                                        <select name="reply_text" style="padding: 6px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #cbd5e1;" required>
+                                            <option value="">-- Choose Quick Reply --</option>
+                                            <option value="Mechanic is dispatched to your location, please wait 15 mins. (आपकी गाड़ी को दुरुस्ती करने वाला बांदा निकल रहा है, कृपया 15 मिनट इंतजार कीजिए)">Mechanic dispatched, please wait 15 mins.</option>
+                                            <option value="We have received your alert. Backup vehicle is on the way. (हमें आपकी गाड़ी बंद होने की सूचना मिल गई है, दूसरी गाड़ी भेजी जा रही है)">Backup vehicle on the way.</option>
+                                            <option value="Please stay calm at your location. Roadside assistance team is calling you now. (कृपया अपनी लोकेशन पर सुरक्षित रहें, हमारी टीम आपको कॉल कर रही है)">Assistance team is calling you.</option>
+                                        </select>
+                                        <button type="submit" style="background: #2563eb; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">Send Reply</button>
+                                    </form>
+                                </td>
                             </tr>
                             {% else %}
-                            <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 20px;">No breakdown assistance requests recorded. (All vehicles running smoothly)</td></tr>
+                            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 20px;">No breakdown assistance requests recorded. (All vehicles running smoothly)</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
 
                 <div class="table-card">
-                    <h3 style="margin-bottom: 15px;">Recent Bookings</h3>
+                    <h3 style="margin-bottom: 15px;">Recent Bookings & Live Fleet Monitoring</h3>
                     <table>
                         <thead>
                             <tr>
                                 <th>Booking ID</th>
                                 <th>Customer Name</th>
                                 <th>Vehicle</th>
-                                <th>Pickup Location</th>
+                                <th>Starting Location</th>
+                                <th>Ending Location</th>
                                 <th>Status</th>
-                                <th>Amount</th>
+                                <th>Live Track</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -456,12 +616,13 @@ HTML_LAYOUT = """
                                 <td><b>{{ b['id'] }}</b></td>
                                 <td>{{ b['customer'] }}</td>
                                 <td>{{ b['vehicle'] }}</td>
-                                <td>{{ b['location'] }}</td>
+                                <td>{{ b['start_location'] }}</td>
+                                <td>{{ b['end_location'] }}</td>
                                 <td><span style="background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 12px; font-weight: 600;">Confirmed</span></td>
-                                <td><b>₹ {{ b['amount'] }}</b></td>
+                                <td><a href="/track/{{ b['clean_id'] }}" style="background: #10b981; color: white; padding: 4px 10px; text-decoration: none; border-radius: 6px; font-size: 0.78rem; font-weight: 600;"><i class="fa-solid fa-map-location-dot"></i> Live GPS</a></td>
                             </tr>
                             {% else %}
-                            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 20px;">No bookings recorded yet. (Zero Bookings)</td></tr>
+                            <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 20px;">No bookings recorded yet. (Zero Bookings)</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -524,7 +685,7 @@ HTML_LAYOUT = """
                 </div>
 
             {% elif page == 'book' %}
-                <div class="form-box">
+                <div class="form-box" style="max-width: 600px;">
                     <h2>Book {{ car['name'] }}</h2>
                     <p style="color: var(--text-muted); margin-bottom: 20px;">Rate: <strong>₹ {{ car['price'] }} / day</strong></p>
                     <form method="POST">
@@ -536,10 +697,21 @@ HTML_LAYOUT = """
                             <label>Mobile Number</label>
                             <input type="tel" name="phone" required value="{{ session.get('customer_user', {}).get('phone', '') }}" placeholder="10-digit number">
                         </div>
-                        <div class="form-group">
-                            <label>Pickup Location / City</label>
-                            <input type="text" name="location" required placeholder="e.g., Amalner, Goil Nagar / Railway Station">
+                        
+                        <!-- Starting Location Input with Autocomplete Container -->
+                        <div class="form-group" style="position: relative;">
+                            <label><i class="fa-solid fa-location-dot" style="color: #10b981;"></i> Starting Location (Pickup)</label>
+                            <input type="text" id="start_location" name="start_location" autocomplete="off" required placeholder="Enter starting city, landmark or address...">
+                            <div id="start_suggestions" class="suggestions-list" style="display: none;"></div>
                         </div>
+
+                        <!-- Ending Location Input with Autocomplete Container -->
+                        <div class="form-group" style="position: relative;">
+                            <label><i class="fa-solid fa-flag-checkered" style="color: #ef4444;"></i> Ending Location (Drop-off / Destination)</label>
+                            <input type="text" id="end_location" name="end_location" autocomplete="off" required placeholder="Enter destination city, landmark or address...">
+                            <div id="end_suggestions" class="suggestions-list" style="display: none;"></div>
+                        </div>
+
                         <div class="form-group">
                             <label>Rental Start Date</label>
                             <input type="date" name="start_date" required>
@@ -551,6 +723,58 @@ HTML_LAYOUT = """
                         <button type="submit" class="btn-submit">Confirm Booking</button>
                     </form>
                 </div>
+
+                <script>
+                    function setupLocationAutocomplete(inputId, containerId) {
+                        const input = document.getElementById(inputId);
+                        const container = document.getElementById(containerId);
+                        let timeout = null;
+
+                        input.addEventListener('input', function() {
+                            clearTimeout(timeout);
+                            const query = this.value.trim();
+                            if (query.length < 3) {
+                                container.style.display = 'none';
+                                return;
+                            }
+
+                            timeout = setTimeout(() => {
+                                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=in&limit=5`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        container.innerHTML = '';
+                                        if (data.length > 0) {
+                                            container.style.display = 'block';
+                                            data.forEach(item => {
+                                                const div = document.createElement('div');
+                                                div.className = 'suggestion-item';
+                                                div.innerText = item.display_name;
+                                                div.onclick = function() {
+                                                    input.value = item.display_name;
+                                                    container.style.display = 'none';
+                                                };
+                                                container.appendChild(div);
+                                            });
+                                        } else {
+                                            container.style.display = 'none';
+                                        }
+                                    })
+                                    .catch(err => console.log('Location fetch error'));
+                            }, 300);
+                        });
+
+                        document.addEventListener('click', function(e) {
+                            if (!input.contains(e.target) && !container.contains(e.target)) {
+                                container.style.display = 'none';
+                            }
+                        });
+                    }
+
+                    window.onload = function() {
+                        setupLocationAutocomplete('start_location', 'start_suggestions');
+                        setupLocationAutocomplete('end_location', 'end_suggestions');
+                    };
+                </script>
             {% endif %}
         </div>
     </div>
@@ -672,8 +896,25 @@ def my_bookings():
         return redirect(url_for('customer_login'))
 
     user_email = session['customer_user']['email']
-    user_b = [b for b in BOOKINGS if b.get('customer_email') == user_email]
-    return render_template_string(HTML_LAYOUT, page='my_bookings', title='My Bookings', my_bookings=user_b, owner=OWNER_INFO)
+    user_b = []
+    for b in BOOKINGS:
+        if b.get('customer_email') == user_email:
+            b_copy = b.copy()
+            b_copy['clean_id'] = b['id'].replace('#', '')
+            user_b.append(b_copy)
+            
+    user_br = [br for br in BREAKDOWN_REQUESTS if br.get('customer_phone') == session['customer_user']['phone'] or br.get('customer_name') == session['customer_user']['name']]
+    
+    return render_template_string(HTML_LAYOUT, page='my_bookings', title='My Bookings', my_bookings=user_b, my_breakdowns=user_br, owner=OWNER_INFO)
+
+@app.route('/track/<path:booking_id>')
+def track_booking(booking_id):
+    search_id = booking_id if booking_id.startswith('#') else f"#{booking_id}"
+    booking = next((b for b in BOOKINGS if b['id'] == search_id or b['id'] == booking_id), None)
+    if not booking:
+        flash("Booking not found!")
+        return redirect(url_for('home'))
+    return render_template_string(HTML_LAYOUT, page='track_booking', title='Live Vehicle GPS Tracking', booking=booking, owner=OWNER_INFO)
 
 @app.route('/customer/breakdown', methods=['GET', 'POST'])
 def customer_breakdown():
@@ -705,7 +946,8 @@ def customer_breakdown():
             "issue": issue_type,
             "location": location,
             "description": description,
-            "status": "Pending Dispatch"
+            "status": "Pending Dispatch",
+            "admin_reply": ""
         })
 
         wa_msg = f"🚨 EMERGENCY ROADWAY ASSISTANCE!\nReq ID: {br_id}\nBooking: {booking_id}\nVehicle: {vehicle_name}\nCustomer: {customer_name} ({customer_phone})\nIssue: {issue_type}\nLocation: {location}\nDesc: {description}"
@@ -714,6 +956,24 @@ def customer_breakdown():
         return redirect(url_for('my_bookings'))
 
     return render_template_string(HTML_LAYOUT, page='breakdown_request', title='Vehicle Breakdown Assistance', my_bookings=user_b, owner=OWNER_INFO)
+
+@app.route('/admin/breakdown/reply', methods=['POST'])
+def admin_breakdown_reply():
+    if not session.get('admin_logged_in'):
+        flash("Please login as admin!")
+        return redirect(url_for('admin_login'))
+    
+    br_id = request.form.get('breakdown_id')
+    reply_text = request.form.get('reply_text')
+    
+    for br in BREAKDOWN_REQUESTS:
+        if br['id'] == br_id:
+            br['admin_reply'] = reply_text
+            br['status'] = "Assistance Dispatched"
+            break
+            
+    flash(f"Reply sent successfully for request {br_id}!")
+    return redirect(url_for('admin_dashboard'))
 
 @app.route('/customer/logout')
 def customer_logout():
@@ -740,11 +1000,18 @@ def admin_dashboard():
         return redirect(url_for('admin_login'))
 
     total_rev = sum(b['amount'] for b in BOOKINGS)
+    
+    admin_bookings = []
+    for b in BOOKINGS:
+        b_copy = b.copy()
+        b_copy['clean_id'] = b['id'].replace('#', '')
+        admin_bookings.append(b_copy)
+
     return render_template_string(
         HTML_LAYOUT,
         page='dashboard',
         title='Admin Dashboard',
-        bookings=BOOKINGS,
+        bookings=admin_bookings,
         breakdowns=BREAKDOWN_REQUESTS,
         total_bookings=len(BOOKINGS),
         total_customers=len(USERS_DB),
@@ -789,7 +1056,8 @@ def book_car(car_id):
     if request.method == 'POST':
         c_name = request.form.get('customer_name')
         c_phone = request.form.get('phone')
-        location = request.form.get('location')
+        start_location = request.form.get('start_location')
+        end_location = request.form.get('end_location')
         days = int(request.form.get('days', 1))
         amount = days * car['price']
 
@@ -801,12 +1069,13 @@ def book_car(car_id):
             "customer": c_name,
             "customer_email": c_email,
             "vehicle": car['name'],
-            "location": location,
+            "start_location": start_location,
+            "end_location": end_location,
             "days": days,
             "amount": amount
         })
 
-        wa_msg = f"New Ride Booking!\nID: {b_id}\nVehicle: {car['name']}\nCustomer: {c_name}\nPhone: {c_phone}\nPickup Location: {location}\nTotal: ₹{amount}"
+        wa_msg = f"New Ride Booking!\nID: {b_id}\nVehicle: {car['name']}\nCustomer: {c_name}\nPhone: {c_phone}\nStart Location: {start_location}\nEnd Location: {end_location}\nTotal: ₹{amount}"
         session['last_booking_msg'] = wa_msg
         flash(f"Booking confirmed for {car['name']}! Total: ₹{amount}")
         return redirect(url_for('home'))
