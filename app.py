@@ -87,9 +87,6 @@ HTML_LAYOUT = """
     <title>Car Rental Management System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Leaflet CSS for Interactive OpenStreetMap Live Tracking -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         :root { --sidebar-bg: #0f172a; --sidebar-active: #2563eb; --bg-main: #f8fafc; --text-dark: #1e293b; --text-muted: #64748b; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -134,19 +131,11 @@ HTML_LAYOUT = """
         .thumb-img { width: 100%; height: 70px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; }
         .thumb-img.active { border-color: #2563eb; }
 
-        .form-box { background: white; padding: 30px; border-radius: 12px; max-width: 500px; margin: 20px auto; border: 1px solid #e2e8f0; position: relative; }
-        .form-group { margin-bottom: 18px; position: relative; }
+        .form-box { background: white; padding: 30px; border-radius: 12px; max-width: 450px; margin: 20px auto; border: 1px solid #e2e8f0; }
+        .form-group { margin-bottom: 18px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.88rem; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; }
         .btn-submit { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
-
-        /* Suggestions Dropdown Style */
-        .suggestions-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 6px 6px; max-height: 180px; overflow-y: auto; z-index: 99; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .suggestion-item { padding: 10px 12px; font-size: 0.88rem; cursor: pointer; border-bottom: 1px solid #f1f5f9; }
-        .suggestion-item:hover { background: #f1f5f9; }
-
-        /* Map styling for live tracking */
-        #liveMap { width: 100%; height: 350px; border-radius: 10px; margin-top: 15px; border: 1px solid #cbd5e1; }
 
         .table-card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #f1f5f9; margin-bottom: 25px; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
@@ -296,3 +285,539 @@ HTML_LAYOUT = """
                         <div class="form-group">
                             <label>Mobile Number</label>
                             <input type="tel" name="phone" required placeholder="10-digit number">
+                        </div>
+                        <div class="form-group">
+                            <label>Driving License Number</label>
+                            <input type="text" name="license" required placeholder="MH-19-2023-XXXXXXX">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" name="email" required placeholder="name@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" name="password" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn-submit">Register Account</button>
+                    </form>
+                </div>
+
+            {% elif page == 'my_bookings' %}
+                <div class="table-card">
+                    <h3 style="margin-bottom: 15px;">My Rental Bookings</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Vehicle</th>
+                                <th>Pickup Location</th>
+                                <th>Rental Days</th>
+                                <th>Status</th>
+                                <th>Amount Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for b in my_bookings %}
+                            <tr>
+                                <td><b>{{ b['id'] }}</b></td>
+                                <td>{{ b['vehicle'] }}</td>
+                                <td>{{ b['location'] }}</td>
+                                <td>{{ b['days'] }} Days</td>
+                                <td><span style="background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Confirmed</span></td>
+                                <td><b>₹ {{ b['amount'] }}</b></td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 25px;">No active bookings found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            {% elif page == 'breakdown_request' %}
+                <div class="form-box" style="max-width: 550px;">
+                    <h2 style="margin-bottom: 8px;"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Vehicle Breakdown Assistance</h2>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px;">Stranded or facing a mechanical problem? Send an instant emergency assistance request to support.</p>
+                    <form method="POST">
+                        <div class="form-group">
+                            <label>Select Your Booking / Vehicle</label>
+                            <select name="booking_id" required>
+                                <option value="">-- Select Active Booking --</option>
+                                {% for b in my_bookings %}
+                                <option value="{{ b['id'] }}">{{ b['id'] }} - {{ b['vehicle'] }} (Location: {{ b['location'] }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Issue Category</label>
+                            <select name="issue_type" required>
+                                <option value="Engine Failure / Won't Start">Engine Failure / Won't Start</option>
+                                <option value="Flat Tyre / Puncture">Flat Tyre / Puncture</option>
+                                <option value="Battery Dead / Electrical Issue">Battery Dead / Electrical Issue</option>
+                                <option value="Accident / Collision Damage">Accident / Collision Damage</option>
+                                <option value="Overheating / Coolant Leak">Overheating / Coolant Leak</option>
+                                <option value="Other Mechanical Problem">Other Mechanical Problem</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Current Breakdown Location / Landmark</label>
+                            <input type="text" name="breakdown_location" required placeholder="e.g., Near Bus Stand, Amalner / Highway NH-52">
+                        </div>
+                        <div class="form-group">
+                            <label>Describe the Problem (Optional details)</label>
+                            <textarea name="description" rows="3" placeholder="Provide extra details for quick mechanic assistance..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit" style="background: #ef4444;"><i class="fa-solid fa-headset"></i> Request Emergency Assistance</button>
+                    </form>
+                </div>
+
+            {% elif page == 'dashboard' %}
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h4>Total Bookings</h4>
+                            <div class="num">{{ total_bookings }}</div>
+                        </div>
+                        <div class="stat-icon" style="background: #8b5cf6;"><i class="fa-solid fa-calendar-days"></i></div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h4>Total Vehicles</h4>
+                            <div class="num">25</div>
+                        </div>
+                        <div class="stat-icon" style="background: #10b981;"><i class="fa-solid fa-car"></i></div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h4>Breakdown Alerts</h4>
+                            <div class="num" style="color: #ef4444;">{{ total_breakdowns }}</div>
+                        </div>
+                        <div class="stat-icon" style="background: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <h4>Total Revenue</h4>
+                            <div class="num">₹ {{ total_revenue }}</div>
+                        </div>
+                        <div class="stat-icon" style="background: #2563eb;"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Vehicle Breakdown & Roadside Assistance Logs</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Booking ID</th>
+                                <th>Customer</th>
+                                <th>Vehicle</th>
+                                <th>Issue Type</th>
+                                <th>Breakdown Location</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for br in breakdowns %}
+                            <tr>
+                                <td><b>{{ br['id'] }}</b></td>
+                                <td>{{ br['booking_id'] }}</td>
+                                <td>{{ br['customer_name'] }}</td>
+                                <td>{{ br['vehicle'] }}</td>
+                                <td><span style="background: #fee2e2; color: #991b1b; padding: 3px 8px; border-radius: 12px; font-weight: 600;">{{ br['issue'] }}</span></td>
+                                <td>{{ br['location'] }}</td>
+                                <td><span style="background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 12px; font-weight: 600;">{{ br['status'] }}</span></td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 20px;">No breakdown assistance requests recorded. (All vehicles running smoothly)</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-card">
+                    <h3 style="margin-bottom: 15px;">Recent Bookings</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Customer Name</th>
+                                <th>Vehicle</th>
+                                <th>Pickup Location</th>
+                                <th>Status</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for b in bookings %}
+                            <tr>
+                                <td><b>{{ b['id'] }}</b></td>
+                                <td>{{ b['customer'] }}</td>
+                                <td>{{ b['vehicle'] }}</td>
+                                <td>{{ b['location'] }}</td>
+                                <td><span style="background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 12px; font-weight: 600;">Confirmed</span></td>
+                                <td><b>₹ {{ b['amount'] }}</b></td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 20px;">No bookings recorded yet. (Zero Bookings)</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            {% elif page == 'admin_bank' %}
+                <div class="form-box" style="max-width: 550px;">
+                    <h2 style="margin-bottom: 8px;"><i class="fa-solid fa-building-columns" style="color: #2563eb;"></i> Owner Bank & Withdrawal Details</h2>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px;">Configure owner account information for earnings withdrawals and payouts.</p>
+                    <form method="POST">
+                        <div class="form-group">
+                            <label>Account Holder / Owner Name</label>
+                            <input type="text" name="account_name" required value="{{ bank_info['account_name'] }}" placeholder="Jayesh Bhavsar">
+                        </div>
+                        <div class="form-group">
+                            <label>Bank Name</label>
+                            <input type="text" name="bank_name" required value="{{ bank_info['bank_name'] }}" placeholder="State Bank of India">
+                        </div>
+                        <div class="form-group">
+                            <label>Account Number</label>
+                            <input type="text" name="account_number" required value="{{ bank_info['account_number'] }}" placeholder="Enter Bank Account Number">
+                        </div>
+                        <div class="form-group">
+                            <label>IFSC Code</label>
+                            <input type="text" name="ifsc_code" required value="{{ bank_info['ifsc_code'] }}" placeholder="SBIN000XXXX">
+                        </div>
+                        <div class="form-group">
+                            <label>UPI ID (For Instant Payouts)</label>
+                            <input type="text" name="upi_id" required value="{{ bank_info['upi_id'] }}" placeholder="username@oksbi">
+                        </div>
+                        <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Save Withdrawal Details</button>
+                    </form>
+                </div>
+
+            {% elif page == 'login' %}
+                <div class="form-box">
+                    <h2 style="text-align: center; margin-bottom: 20px;">Admin Login</h2>
+                    <form method="POST">
+                        <div class="form-group">
+                            <label>Admin Email</label>
+                            <input type="email" name="email" required placeholder="jayeshbhavsar997@gmail.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" name="password" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn-submit">Sign In to Dashboard</button>
+                    </form>
+                </div>
+
+            {% elif page == 'contact' %}
+                <div class="form-box" style="max-width: 550px;">
+                    <h2>Office Contact Info</h2>
+                    <div style="margin-top: 15px; line-height: 1.8;">
+                        <p><strong>Owner Name:</strong> {{ owner['name'] }}</p>
+                        <p><strong>Mobile / WhatsApp:</strong> {{ owner['phone_display'] }}</p>
+                        <p><strong>Official Email:</strong> {{ owner['email'] }}</p>
+                        <p><strong>Office Address:</strong> {{ owner['address'] }}</p>
+                    </div>
+                </div>
+
+            {% elif page == 'book' %}
+                <div class="form-box">
+                    <h2>Book {{ car['name'] }}</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">Rate: <strong>₹ {{ car['price'] }} / day</strong></p>
+                    <form method="POST">
+                        <div class="form-group">
+                            <label>Customer Name</label>
+                            <input type="text" name="customer_name" required value="{{ session.get('customer_user', {}).get('name', '') }}" placeholder="Rahul Patil">
+                        </div>
+                        <div class="form-group">
+                            <label>Mobile Number</label>
+                            <input type="tel" name="phone" required value="{{ session.get('customer_user', {}).get('phone', '') }}" placeholder="10-digit number">
+                        </div>
+                        <div class="form-group">
+                            <label>Pickup Location / City</label>
+                            <input type="text" name="location" required placeholder="e.g., Amalner, Goil Nagar / Railway Station">
+                        </div>
+                        <div class="form-group">
+                            <label>Rental Start Date</label>
+                            <input type="date" name="start_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Rental Days</label>
+                            <input type="number" name="days" value="1" min="1" max="30" required>
+                        </div>
+                        <button type="submit" class="btn-submit">Confirm Booking</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        var currentPhotos = [];
+        var currentVideos = [];
+
+        function openModal(name, photos, videos) {
+            document.getElementById('modalName').innerText = name + " - Media Gallery";
+            currentPhotos = photos;
+            currentVideos = videos;
+            switchMediaMode('photos');
+            document.getElementById('galleryModal').style.display = "block";
+        }
+
+        function closeModal() {
+            var v = document.getElementById('mainVideo');
+            if(v) v.pause();
+            document.getElementById('galleryModal').style.display = "none";
+        }
+
+        function switchMediaMode(mode) {
+            var btnP = document.getElementById('btnPhotos');
+            var btnV = document.getElementById('btnVideos');
+            var imgEl = document.getElementById('mainImg');
+            var vidEl = document.getElementById('mainVideo');
+            var thumbsEl = document.getElementById('thumbsContainer');
+
+            thumbsEl.innerHTML = '';
+            if(vidEl) vidEl.pause();
+
+            if(mode === 'photos') {
+                btnP.classList.add('active');
+                btnV.classList.remove('active');
+                imgEl.style.display = 'block';
+                vidEl.style.display = 'none';
+
+                imgEl.src = currentPhotos[0];
+                currentPhotos.forEach(function(src, idx) {
+                    var thumb = document.createElement('img');
+                    thumb.src = src;
+                    thumb.className = 'thumb-img' + (idx === 0 ? ' active' : '');
+                    thumb.onclick = function() {
+                        imgEl.src = src;
+                        document.querySelectorAll('.thumb-img').forEach(function(t){ t.classList.remove('active'); });
+                        thumb.classList.add('active');
+                    };
+                    thumbsEl.appendChild(thumb);
+                });
+            } else {
+                btnV.classList.add('active');
+                btnP.classList.remove('active');
+                imgEl.style.display = 'none';
+                vidEl.style.display = 'block';
+
+                vidEl.src = currentVideos[0];
+                currentVideos.forEach(function(src, idx) {
+                    var btn = document.createElement('button');
+                    btn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
+                    btn.innerText = 'Video ' + (idx + 1);
+                    btn.onclick = function() {
+                        vidEl.src = src;
+                        vidEl.play();
+                    };
+                    thumbsEl.appendChild(btn);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
+"""
+
+@app.route('/')
+def home():
+    return render_template_string(HTML_LAYOUT, page='home', title='Top Selling Fleet Vehicles', cars=CARS, owner=OWNER_INFO)
+
+@app.route('/customer/register', methods=['GET', 'POST'])
+def customer_register():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        if email in USERS_DB:
+            flash("Account with this email already exists! Please Login.")
+            return redirect(url_for('customer_login'))
+
+        USERS_DB[email] = {
+            "name": request.form.get('name'),
+            "phone": request.form.get('phone'),
+            "license": request.form.get('license'),
+            "email": email,
+            "password_hash": generate_password_hash(request.form.get('password'))
+        }
+        flash("Customer Account Created Successfully! Please Login.")
+        return redirect(url_for('customer_login'))
+
+    return render_template_string(HTML_LAYOUT, page='customer_register', title='Customer Registration', owner=OWNER_INFO)
+
+@app.route('/customer/login', methods=['GET', 'POST'])
+def customer_login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        user = USERS_DB.get(email)
+
+        if user and check_password_hash(user['password_hash'], password):
+            session['customer_user'] = {"email": user['email'], "name": user['name'], "phone": user['phone']}
+            flash(f"Welcome back, {user['name']}!")
+            return redirect(url_for('home'))
+        else:
+            flash("Invalid Customer Email or Password!")
+
+    return render_template_string(HTML_LAYOUT, page='customer_login', title='Customer Login', owner=OWNER_INFO)
+
+@app.route('/customer/my-bookings')
+def my_bookings():
+    if not session.get('customer_user'):
+        flash("Please login to view your bookings!")
+        return redirect(url_for('customer_login'))
+
+    user_email = session['customer_user']['email']
+    user_b = [b for b in BOOKINGS if b.get('customer_email') == user_email]
+    return render_template_string(HTML_LAYOUT, page='my_bookings', title='My Bookings', my_bookings=user_b, owner=OWNER_INFO)
+
+@app.route('/customer/breakdown', methods=['GET', 'POST'])
+def customer_breakdown():
+    if not session.get('customer_user'):
+        flash("Please login to request breakdown assistance!")
+        return redirect(url_for('customer_login'))
+
+    user_email = session['customer_user']['email']
+    user_b = [b for b in BOOKINGS if b.get('customer_email') == user_email]
+
+    if request.method == 'POST':
+        booking_id = request.form.get('booking_id')
+        issue_type = request.form.get('issue_type')
+        location = request.form.get('breakdown_location')
+        description = request.form.get('description', '')
+
+        selected_booking = next((b for b in BOOKINGS if b['id'] == booking_id), None)
+        vehicle_name = selected_booking['vehicle'] if selected_booking else 'Unknown Vehicle'
+        customer_name = session['customer_user']['name']
+        customer_phone = session['customer_user']['phone']
+
+        br_id = f"#BR{1000 + len(BREAKDOWN_REQUESTS) + 1}"
+        BREAKDOWN_REQUESTS.append({
+            "id": br_id,
+            "booking_id": booking_id,
+            "customer_name": customer_name,
+            "customer_phone": customer_phone,
+            "vehicle": vehicle_name,
+            "issue": issue_type,
+            "location": location,
+            "description": description,
+            "status": "Pending Dispatch"
+        })
+
+        wa_msg = f"🚨 EMERGENCY ROADWAY ASSISTANCE!\nReq ID: {br_id}\nBooking: {booking_id}\nVehicle: {vehicle_name}\nCustomer: {customer_name} ({customer_phone})\nIssue: {issue_type}\nLocation: {location}\nDesc: {description}"
+        session['last_breakdown_msg'] = wa_msg
+        flash("Breakdown SOS request registered successfully! Support team alerted.")
+        return redirect(url_for('my_bookings'))
+
+    return render_template_string(HTML_LAYOUT, page='breakdown_request', title='Vehicle Breakdown Assistance', my_bookings=user_b, owner=OWNER_INFO)
+
+@app.route('/customer/logout')
+def customer_logout():
+    session.pop('customer_user', None)
+    flash("Customer Logged Out Successfully!")
+    return redirect(url_for('home'))
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        if email == ADMIN_USER['email'] and check_password_hash(ADMIN_USER['password_hash'], password):
+            session['admin_logged_in'] = ADMIN_USER['email']
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash("Invalid Admin Email or Password!")
+    return render_template_string(HTML_LAYOUT, page='login', title='Admin Login', owner=OWNER_INFO)
+
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    if not session.get('admin_logged_in'):
+        flash("Please login to access Admin Dashboard!")
+        return redirect(url_for('admin_login'))
+
+    total_rev = sum(b['amount'] for b in BOOKINGS)
+    return render_template_string(
+        HTML_LAYOUT,
+        page='dashboard',
+        title='Admin Dashboard',
+        bookings=BOOKINGS,
+        breakdowns=BREAKDOWN_REQUESTS,
+        total_bookings=len(BOOKINGS),
+        total_customers=len(USERS_DB),
+        total_breakdowns=len(BREAKDOWN_REQUESTS),
+        total_revenue=total_rev,
+        owner=OWNER_INFO
+    )
+
+@app.route('/admin/bank-payments', methods=['GET', 'POST'])
+def admin_bank_payments():
+    global ADMIN_BANK_INFO
+    if not session.get('admin_logged_in'):
+        flash("Please login to access Bank & Payments settings!")
+        return redirect(url_for('admin_login'))
+
+    if request.method == 'POST':
+        ADMIN_BANK_INFO = {
+            "account_name": request.form.get('account_name'),
+            "bank_name": request.form.get('bank_name'),
+            "account_number": request.form.get('account_number'),
+            "ifsc_code": request.form.get('ifsc_code'),
+            "upi_id": request.form.get('upi_id')
+        }
+        flash("Owner Bank and Withdrawal details updated successfully!")
+        return redirect(url_for('admin_bank_payments'))
+
+    return render_template_string(
+        HTML_LAYOUT,
+        page='admin_bank',
+        title='Admin Bank & Payments',
+        bank_info=ADMIN_BANK_INFO,
+        owner=OWNER_INFO
+    )
+
+@app.route('/contact')
+def contact():
+    return render_template_string(HTML_LAYOUT, page='contact', title='Contact Details', owner=OWNER_INFO)
+
+@app.route('/book/<int:car_id>', methods=['GET', 'POST'])
+def book_car(car_id):
+    car = next((c for c in CARS if c['id'] == car_id), None)
+    if request.method == 'POST':
+        c_name = request.form.get('customer_name')
+        c_phone = request.form.get('phone')
+        location = request.form.get('location')
+        days = int(request.form.get('days', 1))
+        amount = days * car['price']
+
+        b_id = f"#BK{1000 + len(BOOKINGS) + 1}"
+        c_email = session.get('customer_user', {}).get('email', 'guest')
+
+        BOOKINGS.append({
+            "id": b_id,
+            "customer": c_name,
+            "customer_email": c_email,
+            "vehicle": car['name'],
+            "location": location,
+            "days": days,
+            "amount": amount
+        })
+
+        wa_msg = f"New Ride Booking!\nID: {b_id}\nVehicle: {car['name']}\nCustomer: {c_name}\nPhone: {c_phone}\nPickup Location: {location}\nTotal: ₹{amount}"
+        session['last_booking_msg'] = wa_msg
+        flash(f"Booking confirmed for {car['name']}! Total: ₹{amount}")
+        return redirect(url_for('home'))
+
+    return render_template_string(HTML_LAYOUT, page='book', title='Book Vehicle', car=car, owner=OWNER_INFO)
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin_logged_in', None)
+    flash("Admin Logged Out Successfully!")
+    return redirect(url_for('home'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
