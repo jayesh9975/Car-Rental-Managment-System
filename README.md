@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'car_rental_jayesh_bhavsar_bulletproof_final_2026'
+app.secret_key = 'velocity_prime_jayesh_bhavsar_bulletproof_2026'
 
 # --- Admin Credentials ---
 ADMIN_USER = {
@@ -15,8 +15,8 @@ ADMIN_USER = {
 # --- Owner Info ---
 OWNER_INFO = {
     "name": "Jayesh Harish Bhavsar",
-    "company": "Car Rental Management System",
-    "sub_title": "By Jayesh Bhavsar",
+    "company": "Velocity Prime Car Rentals",
+    "sub_title": "Managed by Jayesh Bhavsar",
     "phone": "+919765432442",
     "phone_display": "+91 9765432442",
     "email": "jayeshbhavsar997@gmail.com",
@@ -85,7 +85,7 @@ LANDING_TEMPLATE = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Rental Management System - By Jayesh Bhavsar</title>
+    <title>Velocity Prime — Premium Car Rental & Management System</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -100,10 +100,10 @@ LANDING_TEMPLATE = """
         nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 6%; background: rgba(11, 15, 25, 0.85); backdrop-filter: blur(12px); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); }
         
         .logo-box { display: flex; align-items: center; gap: 14px; text-decoration: none; }
-        .logo-icon-wrap { width: 45px; height: 45px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
+        .logo-icon-wrap { width: 45px; height: 45px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(59,130,246,0.4); }
         .logo-icon-wrap i { color: #ffffff; font-size: 1.3rem; }
-        .logo-text h2 { font-size: 1.15rem; font-weight: 800; color: #ffffff; letter-spacing: 0.5px; }
-        .logo-text span { font-size: 0.72rem; color: #94a3b8; display: block; font-weight: 500; }
+        .logo-text h2 { font-size: 1.2rem; font-weight: 800; color: #ffffff; letter-spacing: 0.5px; }
+        .logo-text span { font-size: 0.72rem; color: #38bdf8; display: block; font-weight: 600; text-transform: uppercase; }
 
         .nav-links { display: flex; gap: 25px; align-items: center; }
         .nav-links a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: color 0.3s; }
@@ -113,9 +113,9 @@ LANDING_TEMPLATE = """
 
         .hero { min-height: 100vh; display: flex; align-items: center; justify-content: space-between; padding: 140px 6% 80px 6%; }
         .hero-left { max-width: 650px; }
-        .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(37,99,235,0.2); color: #60a5fa; padding: 6px 14px; border-radius: 30px; font-size: 0.85rem; font-weight: 700; margin-bottom: 25px; border: 1px solid rgba(37,99,235,0.4); }
-        .hero-left h1 { font-size: 3.2rem; font-weight: 800; line-height: 1.15; margin-bottom: 20px; letter-spacing: -1px; }
-        .hero-left h1 span { color: #3b82f6; }
+        .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 6px 14px; border-radius: 30px; font-size: 0.85rem; font-weight: 700; margin-bottom: 25px; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .hero-left h1 { font-size: 3.4rem; font-weight: 800; line-height: 1.15; margin-bottom: 20px; letter-spacing: -1px; }
+        .hero-left h1 span { color: #38bdf8; }
         .hero-left p { font-size: 1.1rem; color: #cbd5e1; line-height: 1.7; margin-bottom: 35px; }
         .hero-btns { display: flex; gap: 15px; }
         .cta-main { background: #2563eb; color: white; padding: 16px 32px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 1rem; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(37,99,235,0.4); transition: all 0.3s; }
@@ -128,7 +128,7 @@ LANDING_TEMPLATE = """
         .floating-card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .stat-box { background: rgba(15, 23, 42, 0.7); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); }
-        .stat-box h4 { font-size: 1.5rem; font-weight: 800; color: #60a5fa; }
+        .stat-box h4 { font-size: 1.5rem; font-weight: 800; color: #38bdf8; }
         .stat-box p { font-size: 0.8rem; color: #94a3b8; margin-top: 4px; }
 
         .features-section { padding: 80px 6%; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.08); }
@@ -138,15 +138,15 @@ LANDING_TEMPLATE = """
         
         .grid-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; }
         .feature-card-land { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.08); padding: 35px 30px; border-radius: 16px; transition: transform 0.3s, border-color 0.3s; }
-        .feature-card-land:hover { transform: translateY(-8px); border-color: rgba(37,99,235,0.6); background: rgba(30, 41, 59, 0.8); }
-        .feature-card-land i { font-size: 2.2rem; color: #3b82f6; margin-bottom: 20px; background: rgba(59,130,246,0.15); padding: 16px; border-radius: 12px; }
+        .feature-card-land:hover { transform: translateY(-8px); border-color: rgba(56,189,248,0.6); background: rgba(30, 41, 59, 0.8); }
+        .feature-card-land i { font-size: 2.2rem; color: #38bdf8; margin-bottom: 20px; background: rgba(56,189,248,0.15); padding: 16px; border-radius: 12px; }
         .feature-card-land h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
         .feature-card-land p { font-size: 0.9rem; color: #94a3b8; line-height: 1.6; }
 
         .policy-section { padding: 80px 6%; background: rgba(11, 15, 25, 0.95); border-top: 1px solid rgba(255,255,255,0.08); }
         .policy-container { max-width: 900px; margin: 0 auto; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.1); padding: 50px; border-radius: 20px; backdrop-filter: blur(10px); }
         .policy-container h2 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; color: #ffffff; }
-        .policy-container .last-updated { font-size: 0.85rem; color: #60a5fa; margin-bottom: 30px; display: block; }
+        .policy-container .last-updated { font-size: 0.85rem; color: #38bdf8; margin-bottom: 30px; display: block; }
         .policy-container h3 { font-size: 1.15rem; font-weight: 700; margin: 25px 0 10px 0; color: #38bdf8; }
         .policy-container p { font-size: 0.95rem; color: #94a3b8; line-height: 1.7; margin-bottom: 15px; }
         .policy-container ul { margin-left: 20px; color: #94a3b8; margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6; }
@@ -172,11 +172,11 @@ LANDING_TEMPLATE = """
     <nav>
         <a href="/" class="logo-box">
             <div class="logo-icon-wrap">
-                <i class="fa-solid fa-car-side"></i>
+                <i class="fa-solid fa-gauge-high"></i>
             </div>
             <div class="logo-text">
-                <h2>Car Rental System</h2>
-                <span>By Jayesh Bhavsar</span>
+                <h2>VELOCITY PRIME</h2>
+                <span>Car Rental Management System</span>
             </div>
         </a>
         <div class="nav-links">
@@ -188,9 +188,9 @@ LANDING_TEMPLATE = """
 
     <section class="hero">
         <div class="hero-left">
-            <div class="badge"><i class="fa-solid fa-bolt"></i> Maharashtra's Premier Mobility Platform</div>
-            <h1>Smart, Safe & Seamless <span>Car Rental Management System</span> on Demand</h1>
-            <p>Experience ultra-modern travel with verified fleet vehicles, live GPS telemetry tracking, transparent daily pricing, and 24/7 dedicated roadside assistance managed by Jayesh Bhavsar.</p>
+            <div class="badge"><i class="fa-solid fa-bolt"></i> Maharashtra's Elite Mobility Suite</div>
+            <h1>Smart, Safe & Seamless <span>Car Rental Management</span> on Demand</h1>
+            <p>Experience ultra-modern travel with verified luxury & utility vehicles, live GPS telemetry tracking, transparent daily pricing, and 24/7 dedicated roadside assistance managed by Jayesh Bhavsar.</p>
             <div class="hero-btns">
                 <a href="/home" class="cta-main"><i class="fa-solid fa-compass"></i> Explore Fleet Now <i class="fa-solid fa-arrow-right"></i></a>
                 <a href="/customer/register" class="cta-sec">Create Account</a>
@@ -220,8 +220,8 @@ LANDING_TEMPLATE = """
 
     <section id="features" class="features-section">
         <div class="section-title">
-            <h2>Designed for Ultimate Reliability</h2>
-            <p>Everything you need for a comfortable trip or secure business rental management.</p>
+            <h2>Engineered for Ultimate Reliability</h2>
+            <p>Everything you need for a comfortable trip or secure business fleet management.</p>
         </div>
         <div class="grid-features">
             <div class="feature-card-land">
@@ -247,7 +247,7 @@ LANDING_TEMPLATE = """
             <h2>Privacy Policy & Terms of Service</h2>
             <span class="last-updated">Effective Date: January 1, 2026 | Managed by Jayesh Bhavsar</span>
             
-            <p>Welcome to <strong>Car Rental Management System (By Jayesh Bhavsar)</strong>. We value your trust and are committed to protecting your personal information. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our platform and rental services in Amalner and across Maharashtra.</p>
+            <p>Welcome to <strong>Velocity Prime (Car Rental Management System)</strong>. We value your trust and are committed to protecting your personal information. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our platform and rental services in Amalner and across Maharashtra.</p>
 
             <h3>1. Information We Collect</h3>
             <p>To provide seamless vehicle rentals and support, we may collect the following details:</p>
@@ -279,7 +279,7 @@ LANDING_TEMPLATE = """
     </section>
 
     <footer>
-        <p>&copy; 2026 <span>Car Rental Management System</span>. Built & Managed by Jayesh Bhavsar. All rights reserved.</p>
+        <p>&copy; 2026 <span>Velocity Prime (Car Rental Management System)</span>. Built & Managed by Jayesh Bhavsar. All rights reserved.</p>
         <div class="footer-links">
             <a href="#privacy-policy">Privacy Policy</a>
             <a href="/contact">Support Center</a>
@@ -309,7 +309,7 @@ HTML_LAYOUT = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Rental Management System - By Jayesh Bhavsar</title>
+    <title>Velocity Prime — Car Rental Management System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -327,9 +327,9 @@ HTML_LAYOUT = """
 
         .sidebar { width: 250px; background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; padding: 20px 15px; flex-shrink: 0; }
         .sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 10px 5px 25px 5px; border-bottom: 1px solid #1e293b; }
-        .sidebar-brand i { font-size: 1.8rem; color: #2563eb; }
-        .sidebar-brand div { font-size: 0.95rem; font-weight: 700; }
-        .sidebar-brand span { font-size: 0.75rem; color: #94a3b8; display: block; }
+        .sidebar-brand i { font-size: 1.8rem; color: #38bdf8; }
+        .sidebar-brand div { font-size: 1rem; font-weight: 700; }
+        .sidebar-brand span { font-size: 0.72rem; color: #38bdf8; display: block; text-transform: uppercase; }
 
         .sidebar-top-auth { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #1e293b; }
 
@@ -350,7 +350,7 @@ HTML_LAYOUT = """
         .hero-btn { background: #2563eb; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
         .hero-btn:hover { background: #1d4ed8; transform: translateY(-2px); }
 
-        .hero-icon-anim { font-size: 7rem; color: #3b82f6; animation: floatCar 3s ease-in-out infinite; }
+        .hero-icon-anim { font-size: 7rem; color: #38bdf8; animation: floatCar 3s ease-in-out infinite; }
         @keyframes floatCar {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
@@ -413,14 +413,14 @@ HTML_LAYOUT = """
 
     <div class="sidebar">
         <div class="sidebar-brand">
-            <i class="fa-solid fa-car-side"></i>
-            <div>Car Rental System<span>By Jayesh Bhavsar</span></div>
+            <i class="fa-solid fa-gauge-high"></i>
+            <div>VELOCITY PRIME<span>Car Rental System</span></div>
         </div>
 
         <div class="sidebar-top-auth" style="margin-top: 15px;">
             {% if session.get('customer_user') %}
                 <div style="background: #1e293b; padding: 10px; border-radius: 8px; border: 1px solid #334155;">
-                    <p style="font-size: 0.85rem; color: #94a3b8;"><i class="fa-solid fa-circle-user" style="color: #3b82f6;"></i> Logged In As:</p>
+                    <p style="font-size: 0.85rem; color: #94a3b8;"><i class="fa-solid fa-circle-user" style="color: #38bdf8;"></i> Logged In As:</p>
                     <p style="font-size: 0.9rem; font-weight: 600; color: white; margin: 4px 0;">{{ session['customer_user']['name'] }}</p>
                     <a href="/customer/logout" style="color: #ef4444; text-decoration: none; font-size: 0.82rem; font-weight: 600; display: inline-block; margin-top: 4px;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                 </div>
@@ -517,7 +517,7 @@ HTML_LAYOUT = """
             {% if page == 'home' %}
                 <div class="hero-banner">
                     <div class="hero-content">
-                        <h1>Experience the Best Car Rental Service in Maharashtra</h1>
+                        <h1>Experience Elite Car Rental Service in Maharashtra</h1>
                         <p>Choose from our top-tier fleet of 20 verified vehicles. Enjoy seamless booking, live GPS route tracking, and 24/7 roadside breakdown assistance managed by Jayesh Bhavsar.</p>
                         <a href="#fleetSection" class="hero-btn"><i class="fa-solid fa-car"></i> Explore Fleet Now</a>
                     </div>
