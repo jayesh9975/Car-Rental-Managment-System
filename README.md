@@ -1043,24 +1043,24 @@ HTML_LAYOUT = """
                             <input type="number" name="days" value="1" min="1" max="30" required>
                         </div>
 
-                        <!-- Payment & QR Code Section at the Very Bottom of Form -->
+                        <!-- Payment & QR Code Section placed strictly at the bottom before confirmation -->
                         <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
                             <h4 style="font-size: 1rem; color: #0f172a; margin-bottom: 6px;"><i class="fa-solid fa-qrcode" style="color: #2563eb;"></i> Step 2: Scan QR & Pay</h4>
                             <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 12px;">Scan via PhonePe / GPay to pay <b>Jayesh Harish Bhavsar</b></p>
                             
                             <div style="background: white; display: inline-block; padding: 12px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 12px;">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=jayeshbhavsar@oksbi&pn=Jayesh%20Harish%20Bhavsar&cu=INR" alt="PhonePe QR" style="width: 170px; height: 170px; object-fit: contain; display: block; margin: 0 auto;">
+                                <img src="{{ url_for('static', filename='qr_code.jpg') }}" alt="PhonePe QR" style="width: 170px; height: 170px; object-fit: contain; display: block; margin: 0 auto;">
                             </div>
                             <p style="font-size: 0.82rem; font-weight: 700; color: #1e293b;">JAYESH HARISH BHAVSAR</p>
                         </div>
 
-                        <div class="form-group" style="background: #eff6ff; padding: 15px; border-radius: 8px; border: 1.5px solid #bfdbfe;">
+                        <div class="form-group" style="background: #eff6ff; padding: 15px; border-radius: 8px; border: 1.5px solid #bfdbfe; margin-bottom: 20px;">
                             <label style="color: #1e40af; font-weight: 700;"><i class="fa-solid fa-file-image"></i> Step 3: Upload Payment Screenshot (SS)</label>
                             <input type="file" name="payment_ss" accept="image/*" required style="background: white; padding: 8px; margin-top: 5px;">
                             <small style="color: #475569; font-size: 0.78rem; display: block; margin-top: 6px;">Attach transaction screenshot for fast admin confirmation and booking approval.</small>
                         </div>
 
-                        <button type="submit" class="btn-submit" style="margin-top: 10px;">Confirm Booking & Submit Payment Proof</button>
+                        <button type="submit" class="btn-submit">Confirm Booking & Submit Payment Proof</button>
                     </form>
                 </div>
 
@@ -1429,7 +1429,7 @@ def admin_dashboard():
         flash("Admin access required.")
         return redirect(url_for("admin_login"))
 
-    total_revenue = sum(b.get("total_cost", 0) for b in BOOKINGS if b.get("status"] == "Confirmed")
+    total_revenue = sum(b.get("total_cost", 0) for b in BOOKINGS if b.get("status") == "Confirmed")
 
     return render_template_string(HTML_LAYOUT, page="dashboard", title="Admin Control Dashboard", owner=OWNER_INFO, bookings=BOOKINGS, breakdowns=BREAKDOWN_REQUESTS, total_bookings=len(BOOKINGS), total_breakdowns=len(BREAKDOWN_REQUESTS), total_revenue=total_revenue)
 
@@ -1468,7 +1468,7 @@ def admin_breakdown_reply():
 
     return redirect(url_for("admin_dashboard"))
 
-@app.route("/admin/bank-payments", methods=["GET", "POST"])
+@app.route("/admin/bank-payments",, methods=["GET", "POST"])
 def admin_bank():
     global ADMIN_BANK_INFO
     if not session.get("admin_logged_in"):
