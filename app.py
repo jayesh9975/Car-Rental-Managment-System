@@ -1,11 +1,16 @@
 import os
-import requests
 from flask import Flask, render_template_string, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'car_rental_management_system_jayesh_bhavsar_2026'
+
+# --- Upload Folder Setup ---
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # --- Admin Credentials ---
 ADMIN_USER = {
@@ -878,7 +883,7 @@ HTML_LAYOUT = """
                 </div>
 
                 <div class="table-card">
-                    <h3 style="margin-bottom: 15px;">Customer Bookings Approval Management</h3>
+                    <h3 style="margin-bottom: 15px;">Customer Bookings & Payment Verification</h3>
                     <table>
                         <thead>
                             <tr>
@@ -886,6 +891,7 @@ HTML_LAYOUT = """
                                 <th>Customer Name</th>
                                 <th>Vehicle</th>
                                 <th>Route / Days</th>
+                                <th>Payment SS</th>
                                 <th>Status</th>
                                 <th>Admin Actions</th>
                             </tr>
@@ -897,6 +903,13 @@ HTML_LAYOUT = """
                                 <td>{{ b['customer'] }}<br><small>{{ b['phone'] }}</small></td>
                                 <td>{{ b['vehicle'] }}</td>
                                 <td>{{ b['start_location'] }} ➔ {{ b['end_location'] }}<br>({{ b['days'] }} Days | ₹{{ b['total_cost'] }})</td>
+                                <td>
+                                    {% if b['payment_ss'] %}
+                                        <a href="/{{ b['payment_ss'] }}" target="_blank" style="display: inline-block; background: #2563eb; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; text-decoration: none;"><i class="fa-solid fa-image"></i> View SS</a>
+                                    {% else %}
+                                        <span style="color: #94a3b8; font-size: 0.8rem;">No SS</span>
+                                    {% endif %}
+                                </td>
                                 <td>
                                     {% if b['status'] == 'Confirmed' %}
                                         <span style="background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 12px; font-weight: 600;">Confirmed</span>
@@ -916,7 +929,7 @@ HTML_LAYOUT = """
                                 </td>
                             </tr>
                             {% else %}
-                            <tr><td colspan="6" style="text-align: center; color: #64748b; padding: 20px;">No bookings recorded yet.</td></tr>
+                            <tr><td colspan="7" style="text-align: center; color: #64748b; padding: 20px;">No bookings recorded yet.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -995,10 +1008,21 @@ HTML_LAYOUT = """
                 </div>
 
             {% elif page == 'book' %}
-                <div class="form-box" style="max-width: 600px;">
+                <div class="form-box" style="max-width: 650px;">
                     <h2>Book {{ car['name'] }}</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 20px;">Rate: <strong>₹ {{ car['price'] }} / day</strong></p>
-                    <form method="POST">
+                    <p style="color: var(--text-muted); margin-bottom: 15px;">Rate: <strong>₹ {{ car['price'] }} / day</strong></p>
+                    
+                    <!-- PhonePe QR Code Display Section -->
+                    <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
+                        <h4 style="font-size: 0.95rem; color: #0f172a; margin-bottom: 8px;"><i class="fa-solid fa-qrcode" style="color: #2563eb;"></i> Scan & Pay via PhonePe / UPI</h4>
+                        <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 10px;">Pay the rental amount to <b>Jayesh Harish Bhavsar</b> and upload screenshot below.</p>
+                        <div style="background: white; display: inline-block; padding: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                            <img src="https://i.ibb.co/6R2vP9m3/phonepe-qr-jayesh.jpg" alt="PhonePe QR" style="width: 160px; height: 160px; object-fit: contain; display: block; margin: 0 auto;" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=300&q=80'">
+                        </div>
+                        <p style="font-size: 0.78rem; font-weight: 700; color: #1e293b; margin-top: 8px;">JAYESH HARISH BHAVSAR</p>
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data">
                         <div class="form-group">
                             <label>Customer Name</label>
                             <input type="text" name="customer_name" required value="{{ session.get('customer_user', {}).get('name', '') }}">
@@ -1028,7 +1052,14 @@ HTML_LAYOUT = """
                             <label>Rental Days</label>
                             <input type="number" name="days" value="1" min="1" max="30" required>
                         </div>
-                        <button type="submit" class="btn-submit">Confirm Booking</button>
+                        
+                        <div class="form-group" style="background: #eff6ff; padding: 12px; border-radius: 8px; border: 1px solid #bfdbfe;">
+                            <label style="color: #1e40af;"><i class="fa-solid fa-file-image"></i> Upload Payment Screenshot (SS)</label>
+                            <input type="file" name="payment_ss" accept="image/*" required style="background: white; padding: 8px;">
+                            <small style="color: #64748b; font-size: 0.75rem; display: block; margin-top: 4px;">Attach UPI transaction screenshot for admin confirmation.</small>
+                        </div>
+
+                        <button type="submit" class="btn-submit">Confirm Booking & Submit Payment Proof</button>
                     </form>
                 </div>
 
@@ -1275,6 +1306,15 @@ def book_car(car_id):
             flash("Past dates cannot be selected for rental booking.")
             return redirect(url_for("book_car", car_id=car_id))
 
+        # Handle Payment Screenshot Upload
+        file = request.files.get('payment_ss')
+        ss_path = ""
+        if file and file.filename != '':
+            filename = secure_filename(file.filename)
+            unique_filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{filename}"
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_filename))
+            ss_path = f"static/uploads/{unique_filename}"
+
         booking_id = f"BK-{len(BOOKINGS) + 1001}"
         clean_id = f"CLN-{len(BOOKINGS) + 1001}"
         total_cost = days * car["price"]
@@ -1293,29 +1333,15 @@ def book_car(car_id):
             "start_date": start_date,
             "days": days,
             "total_cost": total_cost,
+            "payment_ss": ss_path,
             "status": "Pending Review"
         }
         BOOKINGS.append(booking_data)
 
-        # --- TEXT SMS AUTOMATIC SENDING CODE ---
-        try:
-            url = "https://www.fast2sms.com/dev/bulkV2"
-            querystring = {
-                "authorization": "YOUR_FAST2SMS_API_KEY", # <--- IThe tumchi fast2smschi API key taka
-                "message": f"Hello {customer_name}, Your Booking ID {booking_id} for {car['name']} is confirmed! Total: Rs.{total_cost}.",
-                "language": "english",
-                "route": "q",
-                "numbers": phone
-            }
-            headers = {'cache-control': "no-cache"}
-            requests.request("GET", url, headers=headers, params=querystring)
-        except Exception as e:
-            print("SMS sending failed:", e)
-
         whatsapp_text = f"Hello, I have booked a {car['name']} (ID: {booking_id}) from {start_location} to {end_location} for {days} days. Total: ₹{total_cost}."
         session["last_booking_msg"] = whatsapp_text
 
-        flash(f"Booking {booking_id} submitted for admin review! Total Amount: ₹{total_cost}")
+        flash(f"Booking {booking_id} and payment proof submitted successfully! Total Amount: ₹{total_cost}")
         return redirect(url_for("home"))
 
     return render_template_string(HTML_LAYOUT, page="book", title=f"Book {car['name']}", owner=OWNER_INFO, car=car, min_date=current_date)
