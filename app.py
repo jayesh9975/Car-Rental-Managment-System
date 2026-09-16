@@ -79,35 +79,39 @@ USERS_DB = {}
 BOOKINGS = []
 BREAKDOWN_REQUESTS = []
 
-# --- Landing Page Template with Dynamic Background Carousel & Clean Header ---
 LANDING_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Rental Management System - Premium Ride Experience</title>
+    <title>JAY CARS - Car Rental Management System</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
         body { background-color: #0b0f19; color: #ffffff; overflow-x: hidden; }
 
-        /* Background Carousel Overlay Setup */
         .bg-carousel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; }
         .bg-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .bg-slide.active { opacity: 1; }
-        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(11, 15, 25, 0.92) 0%, rgba(15, 23, 42, 0.85) 100%); z-index: -1; }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(11, 15, 25, 0.94) 0%, rgba(15, 23, 42, 0.88) 100%); z-index: -1; }
 
-        /* Navigation Bar */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 6%; background: rgba(11, 15, 25, 0.75); backdrop-filter: blur(12px); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); }
-        .logo { display: flex; align-items: center; gap: 12px; font-size: 1.3rem; font-weight: 800; color: #ffffff; text-decoration: none; }
-        .logo i { color: #2563eb; font-size: 1.6rem; }
-        .nav-actions { display: flex; gap: 15px; align-items: center; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 6%; background: rgba(11, 15, 25, 0.85); backdrop-filter: blur(12px); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.08); }
+       
+        /* Logo Styling with JAY'S CARS Badge */
+        .logo-box { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+        .logo-icon-wrap { width: 45px; height: 45px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
+        .logo-icon-wrap i { color: #ffffff; font-size: 1.3rem; }
+        .logo-text h2 { font-size: 1.25rem; font-weight: 800; color: #ffffff; letter-spacing: 0.5px; }
+        .logo-text span { font-size: 0.72rem; color: #94a3b8; display: block; font-weight: 500; }
+
+        .nav-links { display: flex; gap: 25px; align-items: center; }
+        .nav-links a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: color 0.3s; }
+        .nav-links a:hover { color: #ffffff; }
         .btn-primary-land { background: #2563eb; color: white; text-decoration: none; font-weight: 600; font-size: 0.9rem; padding: 10px 24px; border-radius: 8px; box-shadow: 0 4px 15px rgba(37,99,235,0.4); transition: all 0.3s; }
         .btn-primary-land:hover { background: #1d4ed8; transform: translateY(-2px); }
 
-        /* Hero Section */
         .hero { min-height: 100vh; display: flex; align-items: center; justify-content: space-between; padding: 140px 6% 80px 6%; }
         .hero-left { max-width: 650px; }
         .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(37,99,235,0.2); color: #60a5fa; padding: 6px 14px; border-radius: 30px; font-size: 0.85rem; font-weight: 700; margin-bottom: 25px; border: 1px solid rgba(37,99,235,0.4); }
@@ -120,7 +124,6 @@ LANDING_TEMPLATE = """
         .cta-sec { background: rgba(255,255,255,0.08); color: white; padding: 16px 32px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 1rem; border: 1px solid rgba(255,255,255,0.15); transition: all 0.3s; }
         .cta-sec:hover { background: rgba(255,255,255,0.15); }
 
-        /* Hero Right Visual Card */
         .hero-right { position: relative; }
         .floating-card { background: rgba(30, 41, 59, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.12); padding: 30px; border-radius: 20px; width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
         .floating-card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
@@ -129,7 +132,6 @@ LANDING_TEMPLATE = """
         .stat-box h4 { font-size: 1.5rem; font-weight: 800; color: #60a5fa; }
         .stat-box p { font-size: 0.8rem; color: #94a3b8; margin-top: 4px; }
 
-        /* Features Section */
         .features-section { padding: 80px 6%; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.08); }
         .section-title { text-align: center; max-width: 600px; margin: 0 auto 60px auto; }
         .section-title h2 { font-size: 2.3rem; font-weight: 800; margin-bottom: 15px; letter-spacing: -0.5px; }
@@ -142,14 +144,24 @@ LANDING_TEMPLATE = """
         .feature-card-land h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
         .feature-card-land p { font-size: 0.9rem; color: #94a3b8; line-height: 1.6; }
 
-        /* Footer */
-        footer { padding: 40px 6%; text-align: center; background: #070a12; border-top: 1px solid rgba(255,255,255,0.05); color: #64748b; font-size: 0.88rem; }
+        .policy-section { padding: 80px 6%; background: rgba(11, 15, 25, 0.95); border-top: 1px solid rgba(255,255,255,0.08); }
+        .policy-container { max-width: 900px; margin: 0 auto; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.1); padding: 50px; border-radius: 20px; backdrop-filter: blur(10px); }
+        .policy-container h2 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; color: #ffffff; }
+        .policy-container .last-updated { font-size: 0.85rem; color: #60a5fa; margin-bottom: 30px; display: block; }
+        .policy-container h3 { font-size: 1.15rem; font-weight: 700; margin: 25px 0 10px 0; color: #38bdf8; }
+        .policy-container p { font-size: 0.95rem; color: #94a3b8; line-height: 1.7; margin-bottom: 15px; }
+        .policy-container ul { margin-left: 20px; color: #94a3b8; margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6; }
+        .policy-container li { margin-bottom: 8px; }
+
+        footer { padding: 40px 6%; text-align: center; background: #070a12; border-top: 1px solid rgba(255,255,255,0.05); color: #64748b; font-size: 0.88rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         footer span { color: #ffffff; font-weight: 600; }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a { color: #94a3b8; text-decoration: none; font-size: 0.85rem; transition: color 0.3s; }
+        .footer-links a:hover { color: #ffffff; }
     </style>
 </head>
 <body>
 
-    <!-- Dynamic Background Image Carousel -->
     <div class="bg-carousel">
         <div class="bg-slide active" style="background-image: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=80');"></div>
         <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1920&q=80');"></div>
@@ -159,11 +171,18 @@ LANDING_TEMPLATE = """
     <div class="bg-overlay"></div>
 
     <nav>
-        <a href="/" class="logo">
-            <i class="fa-solid fa-car-side"></i>
-            <div>Car Rental Pro <span style="font-size: 0.7rem; color: #94a3b8; display: block; font-weight: 400;">By Jayesh Bhavsar</span></div>
+        <a href="/" class="logo-box">
+            <div class="logo-icon-wrap">
+                <i class="fa-solid fa-car-side"></i>
+            </div>
+            <div class="logo-text">
+                <h2>JAY'S CARS</h2>
+                <span>Car Rental Management System</span>
+            </div>
         </a>
-        <div class="nav-actions">
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#privacy-policy">Privacy Policy</a>
             <a href="/home" class="btn-primary-land"><i class="fa-solid fa-compass"></i> Open App / Fleet</a>
         </div>
     </nav>
@@ -171,7 +190,7 @@ LANDING_TEMPLATE = """
     <section class="hero">
         <div class="hero-left">
             <div class="badge"><i class="fa-solid fa-bolt"></i> Maharashtra's Premier Mobility Platform</div>
-            <h1>Smart, Safe & Seamless <span>Car Rentals</span> on Demand</h1>
+            <h1>Smart, Safe & Seamless <span>Car Rental Management System</span> on Demand</h1>
             <p>Experience ultra-modern travel with verified fleet vehicles, live GPS telemetry tracking, transparent daily pricing, and 24/7 dedicated roadside assistance managed by Jayesh Bhavsar.</p>
             <div class="hero-btns">
                 <a href="/home" class="cta-main"><i class="fa-solid fa-compass"></i> Explore Fleet Now <i class="fa-solid fa-arrow-right"></i></a>
@@ -200,7 +219,7 @@ LANDING_TEMPLATE = """
         </div>
     </section>
 
-    <section class="features-section">
+    <section id="features" class="features-section">
         <div class="section-title">
             <h2>Designed for Ultimate Reliability</h2>
             <p>Everything you need for a comfortable trip or secure business rental management.</p>
@@ -224,12 +243,52 @@ LANDING_TEMPLATE = """
         </div>
     </section>
 
+    <section id="privacy-policy" class="policy-section">
+        <div class="policy-container">
+            <h2>Privacy Policy & Terms of Service</h2>
+            <span class="last-updated">Effective Date: January 1, 2026 | Managed by Jayesh Bhavsar</span>
+           
+            <p>Welcome to <strong>JAY'S CARS (Car Rental Management System)</strong>. We value your trust and are committed to protecting your personal information. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our platform and rental services in Amalner and across Maharashtra.</p>
+
+            <h3>1. Information We Collect</h3>
+            <p>To provide seamless vehicle rentals and support, we may collect the following details:</p>
+            <ul>
+                <li><strong>Personal Identification Data:</strong> Full name, email address, phone number, and residential address.</li>
+                <li><strong>Verification Documents:</strong> Valid Driving License details and government-approved identification for legal rental compliance.</li>
+                <li><strong>Trip & Location Data:</strong> Pickup/drop-off locations, rental dates, and live GPS telemetry data during active bookings for safety and tracking.</li>
+            </ul>
+
+            <h3>2. How We Use Your Information</h3>
+            <p>Your data is strictly utilized for core operational purposes, which include:</p>
+            <ul>
+                <li>Processing and verifying vehicle bookings and rental agreements.</li>
+                <li>Providing live GPS tracking for active trips and facilitating 24/7 roadside breakdown assistance.</li>
+                <li>Communicating booking confirmations, safety notices, and updates via direct messaging or WhatsApp.</li>
+            </ul>
+
+            <h3>3. Data Security & Protection</h3>
+            <p>We implement robust administrative and technical safeguards (including password hashing and secure session controls) to protect your data from unauthorized access, alteration, or disclosure. Your payment and bank records are handled with high security standards.</p>
+
+            <h3>4. Contact & Support</h3>
+            <p>If you have any questions, concerns, or requests regarding this Privacy Policy or your data privacy, you can directly reach out to our administration office:</p>
+            <ul>
+                <li><strong>Owner:</strong> Jayesh Harish Bhavsar</li>
+                <li><strong>Location:</strong> Gohil Nagar, Amalner, Maharashtra, India</li>
+                <li><strong>Helpline:</strong> +91 9765432442 | jayeshbhavsar997@gmail.com</li>
+            </ul>
+        </div>
+    </section>
+
     <footer>
-        <p>&copy; 2026 <span>Car Rental Management System</span>. Built & Managed by Jayesh Bhavsar. All rights reserved.</p>
+        <p>&copy; 2026 <span>JAY'S CARS (Car Rental Management System)</span>. Built & Managed by Jayesh Bhavsar. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="#privacy-policy">Privacy Policy</a>
+            <a href="/contact">Support Center</a>
+            <a href="/home">App Dashboard</a>
+        </div>
     </footer>
 
     <script>
-        // Automatic Background Image Carousel Script
         let slides = document.querySelectorAll('.bg-slide');
         let currentSlide = 0;
        
@@ -239,7 +298,7 @@ LANDING_TEMPLATE = """
             slides[currentSlide].classList.add('active');
         }
        
-        setInterval(nextSlide, 5000); // Change image every 5 seconds
+        setInterval(nextSlide, 5000);
     </script>
 </body>
 </html>
@@ -251,7 +310,7 @@ HTML_LAYOUT = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Rental Management System</title>
+    <title>JAY'S CARS - Car Rental Management System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -356,7 +415,7 @@ HTML_LAYOUT = """
     <div class="sidebar">
         <div class="sidebar-brand">
             <i class="fa-solid fa-car-side"></i>
-            <div>{{ owner['company'] }}<span>{{ owner['sub_title'] }}</span></div>
+            <div>JAY'S CARS<span>Management System</span></div>
         </div>
 
         <div class="sidebar-top-auth" style="margin-top: 15px;">
@@ -909,13 +968,29 @@ HTML_LAYOUT = """
                 </div>
 
             {% elif page == 'contact' %}
-                <div class="form-box" style="max-width: 550px;">
-                    <h2>Office Contact Info</h2>
-                    <div style="margin-top: 15px; line-height: 1.8;">
-                        <p><strong>Owner Name:</strong> {{ owner['name'] }}</p>
-                        <p><strong>Mobile / WhatsApp:</strong> {{ owner['phone_display'] }}</p>
-                        <p><strong>Official Email:</strong> {{ owner['email'] }}</p>
-                        <p><strong>Office Address:</strong> {{ owner['address'] }}</p>
+                <div class="form-box" style="max-width: 600px;">
+                    <h2><i class="fa-solid fa-headset" style="color: #2563eb;"></i> 24/7 Support & Contact Center</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 8px 0 20px 0;">Need immediate help or booking assistance? Reach out to us anytime through the options below:</p>
+                   
+                    <div style="display: flex; flex-direction: column; gap: 14px;">
+                        <div style="background: #f1f5f9; padding: 15px; border-radius: 10px; border-left: 4px solid #2563eb;">
+                            <p style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">{{ owner['name'] }}</p>
+                            <p style="font-size: 0.85rem; color: #64748b; margin-top: 2px;">{{ owner['address'] }}</p>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                            <a href="tel:9765432442" style="background: #2563eb; color: white; padding: 12px 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(37,99,235,0.2);">
+                                <i class="fa-solid fa-phone" style="font-size: 1.1rem;"></i> Call Now
+                            </a>
+
+                            <a href="https://wa.me/919765432442?text=Hello%20Jayesh,%20I%20need%20assistance%20with%20car%20rental." target="_blank" style="background: #10b981; color: white; padding: 12px 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(16,185,129,0.2);">
+                                <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> WhatsApp
+                            </a>
+
+                            <a href="mailto:jayeshbhavsar997@gmail.com?subject=Car%20Rental%20Support%20Inquiry" style="background: #8b5cf6; color: white; padding: 12px 10px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(139,92,246,0.2);">
+                                <i class="fa-solid fa-envelope" style="font-size: 1.1rem;"></i> Send Email
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -1060,7 +1135,7 @@ HTML_LAYOUT = """
                 });
             } else {
                 btnV.classList.add('active');
-                btnP.classList.remove('auth-active');
+                btnP.classList.remove('active');
                 imgEl.style.display = 'none';
                 vidEl.style.display = 'block';
 
@@ -1373,7 +1448,7 @@ def admin_bank():
 
 @app.route("/contact")
 def contact():
-    return render_template_string(HTML_LAYOUT, page="contact", title="Contact Us", owner=OWNER_INFO)
+    return render_template_string(HTML_LAYOUT, page="contact", title="24/7 Contact Us", owner=OWNER_INFO)
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
